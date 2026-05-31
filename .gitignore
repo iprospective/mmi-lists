@@ -1,0 +1,15 @@
+# --- Secrets ---
+config.php
+
+# --- Données (jamais versionnées) ---
+# Base SQLite : réservations + emails des invités
+data/*.sqlite
+data/*.sqlite-wal
+data/*.sqlite-shm
+# Liste perso et matériaux sources
+sources/
+
+# --- Photos produits ---
+# Non versionnées : à copier sur l'hébergement à part (ou via la page admin).
+img/products/*
+!img/products/.gitkeep

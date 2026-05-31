@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="Photo à venir">
+  <rect width="400" height="300" fill="#f1ebe4"/>
+  <g fill="#cdbfb0" text-anchor="middle" font-family="system-ui, sans-serif">
+    <text x="200" y="150" font-size="80">📷</text>
+    <text x="200" y="210" font-size="20">Photo à venir</text>
+  </g>
+</svg>
