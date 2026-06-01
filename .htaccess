@@ -10,5 +10,17 @@
     Require all denied
 </Files>
 
+# Bloque l'accès direct au code de l'application
+RedirectMatch 404 (^|/)(app|services|controllers|templates)/
+
 # Page d'accueil par défaut
 DirectoryIndex index.php
+
+# Routage : tout ce qui n'est pas un fichier ou dossier réel passe par le front controller
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+    RewriteRule ^ index.php [L]
+</IfModule>

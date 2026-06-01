@@ -7,6 +7,22 @@ Versionnage [SemVer](https://semver.org/lang/fr/) : `MAJEUR.MINEUR.CORRECTIF`.
 
 ## [Non publié]
 
+## [0.3.0] - 2026-06-01
+
+### Modifié
+- **Réorganisation en mini-framework** : un point d'entrée unique (front controller)
+  avec un routeur, et le code réparti en `controllers/`, `services/` et `templates/`.
+- URLs propres et lisibles (`/admin/categories`, `/reserve`…) via réécriture
+  `.htaccess`, avec prise en charge d'une installation en sous-répertoire.
+- Logique métier isolée dans des services (articles, catégories, réservations,
+  paramètres, authentification, base de données) ; les contrôleurs orchestrent et
+  les gabarits ne font que l'affichage.
+- Chargement automatique des classes (autoloader) ; aucune dépendance externe ajoutée.
+
+### Sécurité
+- Accès direct au code applicatif (`app/`, `services/`, `controllers/`, `templates/`)
+  bloqué côté serveur.
+
 ## [0.2.0] - 2026-06-01
 
 ### Ajouté
@@ -55,5 +71,6 @@ Versionnage [SemVer](https://semver.org/lang/fr/) : `MAJEUR.MINEUR.CORRECTIF`.
 - Réorganisation de l'ordre des articles depuis l'admin.
 
 [Non publié]: #
+[0.3.0]: #
 [0.2.0]: #
 [0.1.0]: #

@@ -1,93 +1,9 @@
 <?php
-$adminPage = 'items';
-require __DIR__ . '/lib/admin_auth.php';
-
-$msg = null; $msgType = 'ok';
-
-// --- Actions (protégées par CSRF) ---
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && check_csrf()) {
-    $action = $_POST['action'] ?? '';
-
-    if ($action === 'upload_photo') {
-        $id = (int) ($_POST['item_id'] ?? 0);
-        $item = $pdo->query("SELECT * FROM items WHERE id = " . $id)->fetch();
-        if ($item && isset($_FILES['photo']) && $_FILES['photo']['error'] === UPLOAD_ERR_OK) {
-            $tmp = $_FILES['photo']['tmp_name'];
-            $info = @getimagesize($tmp);
-            $allowed = [IMAGETYPE_JPEG => 'jpg', IMAGETYPE_PNG => 'png', IMAGETYPE_GIF => 'gif', IMAGETYPE_WEBP => 'webp'];
-            if ($info && isset($allowed[$info[2]]) && $_FILES['photo']['size'] <= 8 * 1024 * 1024) {
-                $ext = $allowed[$info[2]];
-                $fname = $item['slug'] . '.' . $ext;
-                $dest = $ROOT . '/img/products/' . $fname;
-                foreach (['jpg','png','gif','webp'] as $oldExt) {
-                    $old = $ROOT . '/img/products/' . $item['slug'] . '.' . $oldExt;
-                    if ($old !== $dest && is_file($old)) @unlink($old);
-                }
-                if (move_uploaded_file($tmp, $dest)) {
-                    $pdo->prepare("UPDATE items SET photo = ? WHERE id = ?")->execute([$fname, $id]);
-                    $msg = "Photo mise à jour pour « " . $item['name'] . " ».";
-                } else {
-                    $msg = "Échec de l'enregistrement du fichier (droits sur img/products/ ?)."; $msgType = 'error';
-                }
-            } else {
-                $msg = "Fichier invalide : JPG, PNG, GIF ou WEBP, 8 Mo max."; $msgType = 'error';
-            }
-        } else {
-            $msg = "Aucun fichier reçu."; $msgType = 'error';
-        }
-    }
-
-    elseif ($action === 'save_item') {
-        $id = (int) ($_POST['item_id'] ?? 0);
-        $name = trim((string) ($_POST['name'] ?? ''));
-        $cat  = trim((string) ($_POST['category'] ?? ''));
-        $desc = trim((string) ($_POST['description'] ?? ''));
-        $search = trim((string) ($_POST['search'] ?? ''));
-        $qtyRaw = trim((string) ($_POST['qty_needed'] ?? ''));
-        $qty = ($qtyRaw === '' || strtolower($qtyRaw) === 'illimité') ? null : max(0, (int) $qtyRaw);
-        if ($name !== '') {
-            $pdo->prepare("UPDATE items SET name=?, category=?, description=?, search=?, qty_needed=? WHERE id=?")
-                ->execute([$name, $cat, $desc, $search, $qty, $id]);
-            $msg = "Article mis à jour.";
-        } else {
-            $msg = "Le nom ne peut pas être vide."; $msgType = 'error';
-        }
-    }
-
-    elseif ($action === 'add_item') {
-        $name = trim((string) ($_POST['name'] ?? ''));
-        $cat  = trim((string) ($_POST['category'] ?? ''));
-        if ($name !== '') {
-            $slug = preg_replace('/[^a-z0-9]+/', '-', strtolower(
-                iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $name) ?: $name
-            ));
-            $slug = trim($slug, '-') ?: ('item-' . time());
-            $base = $slug; $n = 2;
-            while ($pdo->query("SELECT 1 FROM items WHERE slug = " . $pdo->quote($slug))->fetchColumn()) {
-                $slug = $base . '-' . $n++;
-            }
-            $maxOrder = (int) $pdo->query("SELECT COALESCE(MAX(sort_order),0)+1 FROM items")->fetchColumn();
-            $pdo->prepare("INSERT INTO items (slug, category, name, sort_order) VALUES (?,?,?,?)")
-                ->execute([$slug, $cat, $name, $maxOrder]);
-            $msg = "Article « " . $name . " » ajouté.";
-        } else {
-            $msg = "Indiquez au moins un nom."; $msgType = 'error';
-        }
-    }
-
-    elseif ($action === 'delete_item') {
-        $id = (int) ($_POST['item_id'] ?? 0);
-        $pdo->prepare("DELETE FROM items WHERE id = ?")->execute([$id]);
-        $msg = "Article supprimé (et ses réservations).";
-    }
-}
-
-$items = load_items($pdo);
-$categories = load_categories($pdo);
-
-$pageTitle = 'Administration — Articles';
-require __DIR__ . '/lib/header.php';
-require __DIR__ . '/lib/admin_nav.php';
+/** @var array $items */
+/** @var array $categories */
+/** @var ?string $msg */
+/** @var string $msgType */
+require APP_ROOT . '/templates/layout/admin_nav.php';
 ?>
 <h1 class="admin-h1">📷 Articles &amp; photos</h1>
 <?php if ($msg): ?><p class="alert <?= e($msgType) ?>"><?= e($msg) ?></p><?php endif; ?>
@@ -166,5 +82,3 @@ require __DIR__ . '/lib/admin_nav.php';
         </article>
     <?php endforeach; ?>
 </div>
-
-<?php require __DIR__ . '/lib/footer.php'; ?>
