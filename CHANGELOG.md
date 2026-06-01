@@ -7,6 +7,25 @@ Versionnage [SemVer](https://semver.org/lang/fr/) : `MAJEUR.MINEUR.CORRECTIF`.
 
 ## [Non publié]
 
+## [0.2.0] - 2026-06-01
+
+### Ajouté
+- **Administration multi-pages** avec barre de navigation par onglets.
+- Page **Catégories** : ajouter, renommer, changer l'icône, réordonner et supprimer
+  les catégories ; le renommage est répercuté sur les articles concernés et la
+  suppression est bloquée tant qu'une catégorie est utilisée.
+- Page **Paramètres** : modifier depuis l'interface le titre du site, le texte
+  d'introduction, le nom des parents et le mot de passe visiteurs (stockés en base).
+- Page **Réservations** : liste complète des réservations (article, personne, email,
+  quantité, date) avec édition et suppression.
+- Page **Personnes** : réservations regroupées par donateur (par email sinon par nom),
+  avec renommage et suppression groupée.
+
+### Modifié
+- Les catégories (icône et ordre d'affichage) sont désormais gérées en base de données
+  plutôt qu'en dur dans le code.
+- La page Articles (`admin.php`) permet de changer la catégorie d'un article.
+
 ## [0.1.0] - 2026-05-31
 
 ### Ajouté
@@ -36,4 +55,5 @@ Versionnage [SemVer](https://semver.org/lang/fr/) : `MAJEUR.MINEUR.CORRECTIF`.
 - Réorganisation de l'ordre des articles depuis l'admin.
 
 [Non publié]: #
+[0.2.0]: #
 [0.1.0]: #

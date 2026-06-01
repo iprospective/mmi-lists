@@ -46,22 +46,13 @@ $flash = $_SESSION['flash'] ?? null;
 unset($_SESSION['flash']);
 $myTokens = my_tokens();
 
-// Regroupe par catégorie en conservant l'ordre
+// Regroupe par catégorie en conservant l'ordre (déjà trié par load_items).
 $byCat = [];
+$catIcons = [];
 foreach ($items as $it) {
     $byCat[$it['category']][] = $it;
+    $catIcons[$it['category']] = $it['category_icon'] ?? '🎁';
 }
-
-$catIcons = [
-    'Soin & Hygiène' => '🧴',
-    'Allaitement & Alimentation' => '🍼',
-    'Vêtements' => '👕',
-    'Meubles & Mobilier' => '🛏️',
-    'Sécurité' => '🛡️',
-    'Jouets' => '🧸',
-    'Voyage & Transport' => '🚲',
-    'Autres (coups de cœur)' => '💛',
-];
 
 $pageTitle = cfg('site_title');
 require __DIR__ . '/lib/header.php';

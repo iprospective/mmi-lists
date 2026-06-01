@@ -58,6 +58,20 @@ $pdo->exec("
         created_at  TEXT NOT NULL DEFAULT (datetime('now'))
     );
 ");
+$pdo->exec("
+    CREATE TABLE IF NOT EXISTS categories (
+        id         INTEGER PRIMARY KEY AUTOINCREMENT,
+        name       TEXT UNIQUE NOT NULL,
+        icon       TEXT NOT NULL DEFAULT '🎁',
+        sort_order INTEGER NOT NULL DEFAULT 0
+    );
+");
+$pdo->exec("
+    CREATE TABLE IF NOT EXISTS settings (
+        key   TEXT PRIMARY KEY,
+        value TEXT NOT NULL DEFAULT ''
+    );
+");
 
 // --- Pré-remplissage au premier lancement ---
 $count = (int) $pdo->query("SELECT COUNT(*) FROM items")->fetchColumn();
@@ -78,6 +92,40 @@ if ($count === 0) {
             ':sort_order'  => $i,
         ]);
     }
+}
+
+// --- Catégories : déduites des articles si la table est vide ---
+$catCount = (int) $pdo->query("SELECT COUNT(*) FROM categories")->fetchColumn();
+if ($catCount === 0) {
+    $defaultIcons = [
+        'Soin & Hygiène'              => '🧴',
+        'Allaitement & Alimentation'  => '🍼',
+        'Vêtements'                   => '👕',
+        'Meubles & Mobilier'          => '🛏️',
+        'Sécurité'                    => '🛡️',
+        'Jouets'                      => '🧸',
+        'Voyage & Transport'          => '🚲',
+        'Autres (coups de cœur)'      => '💛',
+    ];
+    $cats = $pdo->query("SELECT category, MIN(sort_order) AS o FROM items GROUP BY category ORDER BY o")->fetchAll();
+    $insC = $pdo->prepare("INSERT OR IGNORE INTO categories (name, icon, sort_order) VALUES (?, ?, ?)");
+    foreach ($cats as $i => $c) {
+        $insC->execute([$c['category'], $defaultIcons[$c['category']] ?? '🎁', $i]);
+    }
+}
+
+// --- Paramètres modifiables : initialisés depuis config.php au 1er lancement ---
+$has = $pdo->prepare("SELECT 1 FROM settings WHERE key = ?");
+$insS = $pdo->prepare("INSERT INTO settings (key, value) VALUES (?, ?)");
+foreach (['site_title', 'intro', 'parents', 'guest_password'] as $k) {
+    $has->execute([$k]);
+    if (!$has->fetchColumn() && isset($CONFIG[$k])) {
+        $insS->execute([$k, (string) $CONFIG[$k]]);
+    }
+}
+// La base fait foi pour ces paramètres : on surcharge $CONFIG.
+foreach ($pdo->query("SELECT key, value FROM settings") as $row) {
+    $CONFIG[$row['key']] = $row['value'];
 }
 
 // =====================================================================
@@ -106,6 +154,31 @@ function require_guest(): void {
         header('Location: index.php');
         exit;
     }
+}
+
+// Nom de la page admin courante (pour les redirections, sans risque de redirection ouverte).
+function admin_self(): string {
+    return basename($_SERVER['SCRIPT_NAME'] ?? 'admin.php');
+}
+
+// Lecture / écriture d'un paramètre en base.
+function set_setting(PDO $pdo, string $key, string $value): void {
+    $pdo->prepare("INSERT INTO settings (key, value) VALUES (?, ?)
+                   ON CONFLICT(key) DO UPDATE SET value = excluded.value")
+        ->execute([$key, $value]);
+}
+
+function load_categories(PDO $pdo): array {
+    return $pdo->query("SELECT * FROM categories ORDER BY sort_order, name")->fetchAll();
+}
+
+// Nombre d'articles par catégorie (indexé par nom de catégorie).
+function category_item_counts(PDO $pdo): array {
+    $out = [];
+    foreach ($pdo->query("SELECT category, COUNT(*) AS n FROM items GROUP BY category") as $r) {
+        $out[$r['category']] = (int) $r['n'];
+    }
+    return $out;
 }
 
 // Vérifie un mot de passe en limitant les fuites par timing.
@@ -144,7 +217,12 @@ function remember_token(string $token): void {
 
 // Charge tous les articles avec quantité réservée et la liste des réservations.
 function load_items(PDO $pdo): array {
-    $items = $pdo->query("SELECT * FROM items ORDER BY sort_order, id")->fetchAll();
+    $items = $pdo->query("
+        SELECT i.*, c.icon AS category_icon, c.sort_order AS category_order
+        FROM items i
+        LEFT JOIN categories c ON c.name = i.category
+        ORDER BY COALESCE(c.sort_order, 9999), i.sort_order, i.id
+    ")->fetchAll();
     $resStmt = $pdo->query("SELECT * FROM reservations ORDER BY created_at");
     $byItem = [];
     foreach ($resStmt->fetchAll() as $r) {
