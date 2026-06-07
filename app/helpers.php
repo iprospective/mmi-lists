@@ -19,10 +19,44 @@ function url(string $path = ''): string {
     return $base . '/' . ltrim($path, '/');
 }
 
+// URL absolue (schéma + hôte) d'une route interne, pour les liens dans les emails.
+function abs_url(string $path = ''): string {
+    $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+    $host   = $_SERVER['HTTP_HOST'] ?? 'localhost';
+    return $scheme . '://' . $host . url($path);
+}
+
 // Redirection vers une route interne.
 function redirect(string $path = ''): never {
     header('Location: ' . url($path));
     exit;
+}
+
+// Envoi d'un email texte (UTF-8) via la fonction native mail(). L'expéditeur provient
+// du paramètre « email_from » réglable en administration ; renvoie false si l'envoi
+// est impossible (adresse invalide ou expéditeur non configuré) sans lever d'erreur.
+function send_mail(string $to, string $subject, string $body, ?string $replyTo = null): bool {
+    $to   = trim($to);
+    $from = trim((string) cfg('email_from', ''));
+    if (!filter_var($to, FILTER_VALIDATE_EMAIL) || !filter_var($from, FILTER_VALIDATE_EMAIL)) {
+        return false;
+    }
+
+    $name    = (string) cfg('site_title', 'Liste de naissance');
+    $nameEnc = '=?UTF-8?B?' . base64_encode($name) . '?=';
+    $replyTo = ($replyTo !== null && filter_var($replyTo, FILTER_VALIDATE_EMAIL)) ? $replyTo : $from;
+
+    $headers = [
+        'MIME-Version: 1.0',
+        'Content-Type: text/plain; charset=UTF-8',
+        'Content-Transfer-Encoding: 8bit',
+        'From: ' . $nameEnc . ' <' . $from . '>',
+        'Reply-To: ' . $replyTo,
+    ];
+    $subjectEnc = '=?UTF-8?B?' . base64_encode($subject) . '?=';
+
+    // -f aligne l'enveloppe SMTP sur l'expéditeur (utile pour le SPF du domaine).
+    return @mail($to, $subjectEnc, $body, implode("\r\n", $headers), '-f' . $from);
 }
 
 function is_guest(): bool { return Auth::isGuest(); }

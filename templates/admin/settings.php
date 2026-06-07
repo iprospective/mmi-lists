@@ -39,6 +39,18 @@ require APP_ROOT . '/templates/layout/admin_nav.php';
     </label>
 
     <fieldset class="theme-fields">
+        <legend>Notifications par email</legend>
+        <label>Email expéditeur <span class="muted">(adresse « De » des emails envoyés)</span>
+            <input type="email" name="email_from" value="<?= e(cfg('email_from', '')) ?>" placeholder="liste@mondomaine.fr">
+        </label>
+        <label>Email destinataire des notifications <span class="muted">(prévenu à chaque réservation)</span>
+            <input type="email" name="email_to" value="<?= e(cfg('email_to', '')) ?>" placeholder="parents@exemple.fr">
+        </label>
+        <p class="muted small">Laissez vide pour désactiver l'envoi d'emails. La personne qui réserve
+            reçoit un reçu de confirmation si elle indique son adresse.</p>
+    </fieldset>
+
+    <fieldset class="theme-fields">
         <legend>Charte graphique</legend>
         <div class="theme-colors">
             <?php

@@ -47,6 +47,9 @@ final class SettingsController extends BaseAdminController
         if ($pwd !== '') {
             $settings->set('guest_password', $pwd);
         }
+        // Emails (expéditeur / destinataire des notifications). Vides = envoi désactivé.
+        $settings->set('email_from', $this->cleanEmail($_POST['email_from'] ?? ''));
+        $settings->set('email_to', $this->cleanEmail($_POST['email_to'] ?? ''));
         // Charte graphique : couleurs validées en hexa pour éviter toute injection CSS.
         $settings->set('theme_bg', css_color($_POST['theme_bg'] ?? null, '#fbf7f2'));
         $settings->set('theme_heart', css_color($_POST['theme_heart'] ?? null, '#6fae8e'));
@@ -57,6 +60,13 @@ final class SettingsController extends BaseAdminController
         $fmt = (string) ($_POST['header_format'] ?? 'cover');
         $settings->set('header_format', in_array($fmt, ['cover', 'contain'], true) ? $fmt : 'cover');
         $this->msg = "Paramètres enregistrés.";
+    }
+
+    // Renvoie l'email s'il est valide, sinon une chaîne vide (désactive l'envoi).
+    private function cleanEmail(string $value): string
+    {
+        $value = trim($value);
+        return filter_var($value, FILTER_VALIDATE_EMAIL) ? $value : '';
     }
 
     // Restaure une couleur de la charte à sa valeur par défaut (supprime la personnalisation).

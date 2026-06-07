@@ -20,6 +20,11 @@ return [
     // Mot de passe d'ADMINISTRATION (page admin.php : photos + réservations)
     'admin_password' => 'changez-moi-vite',
 
+    // Emails (facultatif) : se règlent aussi depuis l'administration.
+    // Laisser vide pour désactiver l'envoi d'emails.
+    'email_from' => '', // adresse « De » des emails (ex. liste@mondomaine.fr)
+    'email_to'   => '', // destinataire des notifications de réservation
+
     // Charte graphique (facultatif) : se règle aussi depuis l'administration.
     // Couleurs au format hexadécimal (#rgb ou #rrggbb).
     'theme_bg'     => '#fbf7f2', // couleur de fond

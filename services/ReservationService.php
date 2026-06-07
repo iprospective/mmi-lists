@@ -21,6 +21,44 @@ final class ReservationService
         ")->fetchAll();
     }
 
+    // Une réservation par son identifiant, avec le nom de l'article.
+    public function findById(int $id): ?array
+    {
+        $stmt = $this->pdo->prepare("
+            SELECT r.*, i.name AS item_name
+            FROM reservations r LEFT JOIN items i ON i.id = r.item_id
+            WHERE r.id = ?
+        ");
+        $stmt->execute([$id]);
+        return $stmt->fetch() ?: null;
+    }
+
+    // Une réservation par son jeton (authentifie le lien privé reçu par email).
+    public function findByToken(string $token): ?array
+    {
+        $stmt = $this->pdo->prepare("
+            SELECT r.*, i.name AS item_name
+            FROM reservations r LEFT JOIN items i ON i.id = r.item_id
+            WHERE r.token = ?
+        ");
+        $stmt->execute([$token]);
+        return $stmt->fetch() ?: null;
+    }
+
+    // Toutes les réservations d'une même personne (clé email/nom), récentes d'abord.
+    public function forPersonKey(string $key): array
+    {
+        $rows = $this->pdo->query("
+            SELECT r.*, i.name AS item_name
+            FROM reservations r LEFT JOIN items i ON i.id = r.item_id
+            ORDER BY r.created_at DESC
+        ")->fetchAll();
+        return array_values(array_filter(
+            $rows,
+            static fn (array $r): bool => self::personKey($r['guest_name'], $r['guest_email']) === $key
+        ));
+    }
+
     public function reservedQty(int $itemId): int
     {
         $stmt = $this->pdo->prepare("SELECT COALESCE(SUM(quantity),0) FROM reservations WHERE item_id = ?");

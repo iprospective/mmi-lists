@@ -8,6 +8,15 @@ Versionnage [SemVer](https://semver.org/lang/fr/) : `MAJEUR.MINEUR.CORRECTIF`.
 ## [Non publié]
 
 ### Ajouté
+- **Notifications par email à la réservation** : les parents sont prévenus à chaque
+  nouvelle réservation (cadeau, quantité, prénom, email), et la personne qui réserve
+  reçoit un reçu de confirmation si elle a indiqué son adresse. Adresses **expéditeur**
+  et **destinataire** réglables depuis l'administration ; envoi via `mail()` (sans
+  dépendance), désactivé tant que les adresses ne sont pas renseignées.
+- **Gestion de ses réservations par lien privé** : le reçu de confirmation contient un
+  lien unique (`/mes-reservations`) permettant à la personne de voir et d'annuler ses
+  réservations sans mot de passe ni connexion. L'annulation reste limitée à ses propres
+  réservations (même adresse email).
 - **Charte graphique réglable depuis l'administration** : couleur de fond, couleur
   des cœurs (et accents « déjà offert ») et couleur des boutons, choisies via des
   sélecteurs de couleur. Les valeurs sont validées en hexadécimal côté serveur puis

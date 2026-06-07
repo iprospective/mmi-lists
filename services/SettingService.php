@@ -13,6 +13,7 @@ final class SettingService
         'site_title', 'intro', 'parents', 'guest_password',
         'theme_bg', 'theme_heart', 'theme_button',
         'header_photo', 'header_position', 'header_format',
+        'email_from', 'email_to',
     ];
 
     // Couleurs de la charte (réinitialisables individuellement).
