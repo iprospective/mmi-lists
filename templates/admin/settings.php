@@ -41,19 +41,34 @@ require APP_ROOT . '/templates/layout/admin_nav.php';
     <fieldset class="theme-fields">
         <legend>Charte graphique</legend>
         <div class="theme-colors">
-            <label>Couleur de fond
-                <input type="color" name="theme_bg" value="<?= e(css_color(cfg('theme_bg'), '#fbf7f2')) ?>">
-            </label>
-            <label>Couleur des cœurs
-                <input type="color" name="theme_heart" value="<?= e(css_color(cfg('theme_heart'), '#6fae8e')) ?>">
-            </label>
-            <label>Couleur des boutons
-                <input type="color" name="theme_button" value="<?= e(css_color(cfg('theme_button'), '#e9a17c')) ?>">
-            </label>
+            <?php
+            $themeDefaults = ['theme_bg' => '#fbf7f2', 'theme_heart' => '#6fae8e', 'theme_button' => '#e9a17c'];
+            $themeLabels   = ['theme_bg' => 'Couleur de fond', 'theme_heart' => 'Couleur des cœurs', 'theme_button' => 'Couleur des boutons'];
+            foreach ($themeLabels as $key => $lbl):
+                $val    = css_color(cfg($key), $themeDefaults[$key]);
+                $custom = strtolower($val) !== strtolower($themeDefaults[$key]);
+            ?>
+                <div class="theme-color">
+                    <label><?= e($lbl) ?>
+                        <input type="color" name="<?= e($key) ?>" value="<?= e($val) ?>">
+                    </label>
+                    <?php if ($custom): ?>
+                        <button type="submit" form="reset-color-form" name="color" value="<?= e($key) ?>" class="link-btn reset-color">↺ Réinitialiser</button>
+                    <?php else: ?>
+                        <span class="muted small reset-color">Par défaut</span>
+                    <?php endif; ?>
+                </div>
+            <?php endforeach; ?>
         </div>
     </fieldset>
 
     <button type="submit">Enregistrer</button>
+</form>
+
+<?php // Formulaire à part pour réinitialiser une couleur (déclenché par les boutons « Réinitialiser » via l'attribut form). ?>
+<form id="reset-color-form" method="post" hidden>
+    <input type="hidden" name="action" value="reset_color">
+    <input type="hidden" name="csrf" value="<?= e(csrf_token()) ?>">
 </form>
 
 <fieldset class="theme-fields">

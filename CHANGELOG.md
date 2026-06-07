@@ -12,6 +12,8 @@ Versionnage [SemVer](https://semver.org/lang/fr/) : `MAJEUR.MINEUR.CORRECTIF`.
   des cœurs (et accents « déjà offert ») et couleur des boutons, choisies via des
   sélecteurs de couleur. Les valeurs sont validées en hexadécimal côté serveur puis
   injectées en variables CSS ; le cœur du pied de page devient un visuel recolorable.
+  Chaque couleur personnalisée peut être réinitialisée à sa valeur par défaut d'un
+  clic (le bouton n'apparaît que si la couleur a été modifiée).
 - **Photo d'en-tête de la liste** : une bannière illustrant le thème de la liste,
   téléversée depuis l'administration (avec aperçu et possibilité de la retirer) et
   affichée en haut de la page d'accueil.

@@ -21,6 +21,8 @@ final class SettingsController extends BaseAdminController
                 $this->uploadHeader($settings);
             } elseif ($action === 'remove_header') {
                 $this->removeHeader($settings);
+            } elseif ($action === 'reset_color') {
+                $this->resetColor($settings);
             }
             // Reflète les nouvelles valeurs immédiatement sur cette page.
             $GLOBALS['CONFIG'] = $settings->overlay($GLOBALS['CONFIG']);
@@ -50,6 +52,19 @@ final class SettingsController extends BaseAdminController
         $settings->set('theme_heart', css_color($_POST['theme_heart'] ?? null, '#6fae8e'));
         $settings->set('theme_button', css_color($_POST['theme_button'] ?? null, '#e9a17c'));
         $this->msg = "Paramètres enregistrés.";
+    }
+
+    // Restaure une couleur de la charte à sa valeur par défaut (supprime la personnalisation).
+    private function resetColor(SettingService $settings): void
+    {
+        $key = (string) ($_POST['color'] ?? '');
+        if (!array_key_exists($key, SettingService::DEFAULTS)) {
+            $this->msg = "Couleur inconnue.";
+            $this->msgType = 'error';
+            return;
+        }
+        $settings->set($key, SettingService::DEFAULTS[$key]);
+        $this->msg = "Couleur réinitialisée à sa valeur par défaut.";
     }
 
     private function uploadHeader(SettingService $settings): void
