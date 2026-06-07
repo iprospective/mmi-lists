@@ -50,6 +50,8 @@ final class SettingsController extends BaseAdminController
         // Emails (expéditeur / destinataire des notifications). Vides = envoi désactivé.
         $settings->set('email_from', $this->cleanEmail($_POST['email_from'] ?? ''));
         $settings->set('email_to', $this->cleanEmail($_POST['email_to'] ?? ''));
+        // Double opt-in : la réservation n'est prise en compte qu'après validation par email.
+        $settings->set('require_confirmation', isset($_POST['require_confirmation']) ? '1' : '0');
         // Charte graphique : couleurs validées en hexa pour éviter toute injection CSS.
         $settings->set('theme_bg', css_color($_POST['theme_bg'] ?? null, '#fbf7f2'));
         $settings->set('theme_heart', css_color($_POST['theme_heart'] ?? null, '#6fae8e'));

@@ -48,6 +48,14 @@ require APP_ROOT . '/templates/layout/admin_nav.php';
         </label>
         <p class="muted small">Laissez vide pour désactiver l'envoi d'emails. La personne qui réserve
             reçoit un reçu de confirmation si elle indique son adresse.</p>
+        <label class="checkbox">
+            <input type="checkbox" name="require_confirmation" value="1"
+                <?= cfg('require_confirmation') === '1' ? 'checked' : '' ?>>
+            Demander une validation par email <span class="muted">(la réservation n'est prise en
+            compte qu'après le clic sur le lien reçu)</span>
+        </label>
+        <p class="muted small">Nécessite un email expéditeur configuré ci-dessus. Si activé, la personne
+            doit obligatoirement renseigner son adresse pour réserver.</p>
     </fieldset>
 
     <fieldset class="theme-fields">

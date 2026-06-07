@@ -59,21 +59,32 @@ final class ReservationService
         ));
     }
 
+    // Quantité réservée : seules les réservations confirmées comptent (les réservations
+    // en attente de validation par email ne « bloquent » pas le cadeau).
     public function reservedQty(int $itemId): int
     {
-        $stmt = $this->pdo->prepare("SELECT COALESCE(SUM(quantity),0) FROM reservations WHERE item_id = ?");
+        $stmt = $this->pdo->prepare("SELECT COALESCE(SUM(quantity),0) FROM reservations WHERE item_id = ? AND confirmed = 1");
         $stmt->execute([$itemId]);
         return (int) $stmt->fetchColumn();
     }
 
-    public function create(int $itemId, string $name, string $email, int $qty): string
+    public function create(int $itemId, string $name, string $email, int $qty, bool $confirmed = true): string
     {
         $token = bin2hex(random_bytes(16));
         $this->pdo->prepare("
-            INSERT INTO reservations (item_id, guest_name, guest_email, quantity, token)
-            VALUES (?, ?, ?, ?, ?)
-        ")->execute([$itemId, $name, $email, $qty, $token]);
+            INSERT INTO reservations (item_id, guest_name, guest_email, quantity, token, confirmed)
+            VALUES (?, ?, ?, ?, ?, ?)
+        ")->execute([$itemId, $name, $email, $qty, $token, $confirmed ? 1 : 0]);
         return $token;
+    }
+
+    // Valide une réservation en attente. Renvoie true si elle vient d'être confirmée
+    // (false si le jeton est inconnu ou la réservation déjà confirmée).
+    public function confirm(string $token): bool
+    {
+        $stmt = $this->pdo->prepare("UPDATE reservations SET confirmed = 1 WHERE token = ? AND confirmed = 0");
+        $stmt->execute([$token]);
+        return $stmt->rowCount() > 0;
     }
 
     public function update(int $id, string $name, string $email, int $qty): void

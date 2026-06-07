@@ -13,7 +13,7 @@ final class SettingService
         'site_title', 'intro', 'parents', 'guest_password',
         'theme_bg', 'theme_heart', 'theme_button',
         'header_photo', 'header_position', 'header_format',
-        'email_from', 'email_to',
+        'email_from', 'email_to', 'require_confirmation',
     ];
 
     // Couleurs de la charte (réinitialisables individuellement).
@@ -26,6 +26,7 @@ final class SettingService
         'theme_button'    => '#e9a17c',
         'header_position' => 'banner', // banner | left | right
         'header_format'   => 'cover',  // cover (rogné) | contain (image entière)
+        'require_confirmation' => '0', // 1 = réservation à valider par email (opt-in)
     ];
 
     public function __construct(private PDO $pdo) {}

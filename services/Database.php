@@ -78,6 +78,9 @@ final class Database
         // Colonnes ajoutées après coup (bases existantes) : niveau de besoin et urgence.
         self::ensureColumn($pdo, 'items', 'priority', 'priority INTEGER NOT NULL DEFAULT 0');
         self::ensureColumn($pdo, 'items', 'needed_early', 'needed_early INTEGER NOT NULL DEFAULT 0');
+        // Validation des réservations par email (opt-in) : les réservations existantes
+        // sont considérées comme déjà confirmées (valeur par défaut 1).
+        self::ensureColumn($pdo, 'reservations', 'confirmed', 'confirmed INTEGER NOT NULL DEFAULT 1');
     }
 
     // Ajoute une colonne si elle n'existe pas encore (migration idempotente).

@@ -20,8 +20,10 @@ final class ItemService
             ORDER BY COALESCE(c.sort_order, 9999), i.sort_order, i.id
         ")->fetchAll();
 
+        // Seules les réservations confirmées sont comptées et affichées publiquement
+        // (les réservations en attente de validation par email restent invisibles).
         $byItem = [];
-        foreach ($this->pdo->query("SELECT * FROM reservations ORDER BY created_at")->fetchAll() as $r) {
+        foreach ($this->pdo->query("SELECT * FROM reservations WHERE confirmed = 1 ORDER BY created_at")->fetchAll() as $r) {
             $byItem[$r['item_id']][] = $r;
         }
 

@@ -24,6 +24,9 @@ return [
     // Laisser vide pour désactiver l'envoi d'emails.
     'email_from' => '', // adresse « De » des emails (ex. liste@mondomaine.fr)
     'email_to'   => '', // destinataire des notifications de réservation
+    // '1' = la réservation doit être validée via un lien envoyé par email (double opt-in).
+    // Nécessite email_from configuré ; sinon l'option reste sans effet.
+    'require_confirmation' => '0',
 
     // Charte graphique (facultatif) : se règle aussi depuis l'administration.
     // Couleurs au format hexadécimal (#rgb ou #rrggbb).

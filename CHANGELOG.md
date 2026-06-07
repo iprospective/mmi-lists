@@ -8,6 +8,12 @@ Versionnage [SemVer](https://semver.org/lang/fr/) : `MAJEUR.MINEUR.CORRECTIF`.
 ## [Non publié]
 
 ### Ajouté
+- **Validation de réservation par email (double opt-in, optionnel)** : option activable
+  depuis l'administration. Une fois activée, une réservation reste **en attente** tant que
+  la personne n'a pas cliqué sur le lien de validation reçu par email ; elle n'apparaît pas
+  publiquement et ne décompte pas le cadeau. Après validation, les parents sont notifiés et
+  le reçu (avec lien de gestion) est envoyé. L'option nécessite un email expéditeur configuré
+  et impose la saisie d'une adresse au moment de réserver.
 - **Notifications par email à la réservation** : les parents sont prévenus à chaque
   nouvelle réservation (cadeau, quantité, prénom, email), et la personne qui réserve
   reçoit un reçu de confirmation si elle a indiqué son adresse. Adresses **expéditeur**

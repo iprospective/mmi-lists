@@ -5,6 +5,7 @@ namespace Controllers;
 
 use PDO;
 use Services\ReservationService;
+use Services\ReservationMailer;
 
 // Gestion des réservations par lien privé reçu par email (sans mot de passe).
 // Le jeton de réservation transmis dans l'URL sert d'authentification : il permet
@@ -31,6 +32,39 @@ final class ManageController
             'reservations'  => $reservations,
             'token'         => $token,
             'flash'         => take_flash(),
+        ]);
+    }
+
+    // Validation d'une réservation en attente (double opt-in) : la personne clique
+    // sur le lien reçu par email. Tant que ce n'est pas fait, la réservation reste
+    // invisible et ne bloque pas le cadeau. Une fois validée, les parents sont prévenus.
+    public function confirm(): void
+    {
+        $res   = new ReservationService($this->pdo);
+        $token = (string) ($_GET['t'] ?? '');
+        $owner = $token !== '' ? $res->findByToken($token) : null;
+
+        $status = 'error';
+        if ($owner) {
+            if ((int) $owner['confirmed'] === 1) {
+                $status = 'already';
+            } elseif ($res->confirm($token)) {
+                $status = 'ok';
+                // La réservation devient effective : on prévient les parents et on
+                // envoie le reçu (avec le lien privé de gestion) à la personne.
+                $mailer = new ReservationMailer();
+                $mailer->notifyOwners($owner['item_name'] ?? '', $owner['guest_name'], $owner['guest_email'], (int) $owner['quantity']);
+                if (trim((string) $owner['guest_email']) !== '') {
+                    $mailer->sendReceipt($owner['item_name'] ?? '', $owner['guest_name'], $owner['guest_email'], (int) $owner['quantity'], $token);
+                }
+            }
+        }
+
+        view('manage/confirm', [
+            'pageTitle' => 'Validation de réservation',
+            'status'    => $status,
+            'owner'     => $owner,
+            'token'     => $token,
         ]);
     }
 
