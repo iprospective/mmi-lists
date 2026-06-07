@@ -192,6 +192,8 @@ details.reserve[open] summary { margin-bottom: 10px; }
 /* Footer */
 .footer { border-top: 1px solid var(--line); background: var(--card); margin-top: 40px; }
 .footer .wrap { padding: 20px 0; text-align: center; color: var(--muted); }
+.footer-legal { margin-top: 6px; }
+.footer-legal a { color: var(--muted); text-decoration: underline; }
 
 /* Admin */
 .admin-nav {

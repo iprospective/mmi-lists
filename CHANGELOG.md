@@ -8,6 +8,9 @@ Versionnage [SemVer](https://semver.org/lang/fr/) : `MAJEUR.MINEUR.CORRECTIF`.
 ## [Non publié]
 
 ### Ajouté
+- **Licence libre AGPL v3** : ajout du fichier `LICENSE`, d'un `README.md` décrivant
+  le projet et l'installation, et d'une mention en pied de page reliant à la licence
+  et au code source (<https://github.com/iprospective/mmi-lists>).
 - **Validation de réservation par email (double opt-in, optionnel)** : option activable
   depuis l'administration. Une fois activée, une réservation reste **en attente** tant que
   la personne n'a pas cliqué sur le lien de validation reçu par email ; elle n'apparaît pas
