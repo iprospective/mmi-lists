@@ -85,12 +85,16 @@ function vinted_url(string $terms): string {
 // scripts et gestionnaires d'événements. Saisie réservée à l'administrateur, mais on
 // reste prudent car la valeur est ensuite affichée telle quelle.
 function sanitize_html(string $html): string {
-    $allowed = '<p><br><strong><b><em><i><u><ul><ol><li><a><h2><h3><blockquote>';
+    $allowed = '<p><br><strong><b><em><i><u><ul><ol><li><a><h2><h3><blockquote><div>';
     $html = strip_tags($html, $allowed);
 
     $html = preg_replace_callback('/<(\/?)([a-z0-9]+)([^>]*)>/i', static function (array $m): string {
         $close = $m[1];
         $tag   = strtolower($m[2]);
+        // L'éditeur insère parfois des <div> pour les sauts de ligne : on les traite comme des paragraphes.
+        if ($tag === 'div') {
+            $tag = 'p';
+        }
         if ($close === '/') {
             return "</$tag>";
         }

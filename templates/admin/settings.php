@@ -45,12 +45,36 @@ require APP_ROOT . '/templates/layout/admin_nav.php';
 
 <script>
 (function () {
+    // Enter crée un nouveau paragraphe <p> (plutôt qu'un <div>) dans les navigateurs récents.
+    try { document.execCommand('defaultParagraphSeparator', false, 'p'); } catch (e) {}
+
     document.querySelectorAll('.wysiwyg').forEach(function (box) {
         var editor = box.querySelector('.wysiwyg-editor');
         var field  = document.getElementById(box.dataset.target);
         if (!editor || !field) return;
 
-        function sync() { field.value = editor.innerHTML.trim(); }
+        // Garantit qu'on édite toujours à l'intérieur d'un paragraphe (gestion homogène des sauts de ligne).
+        function ensureParagraph() {
+            var html = editor.innerHTML.trim();
+            if (html === '' || html === '<br>') {
+                editor.innerHTML = '<p><br></p>';
+            }
+        }
+        // Au chargement seulement : enveloppe un contenu texte brut hérité dans un paragraphe.
+        (function normalizeInitial() {
+            var html = editor.innerHTML.trim();
+            if (html === '' || html === '<br>') {
+                editor.innerHTML = '<p><br></p>';
+            } else if (!/<(p|div|ul|ol|h2|h3|blockquote)[\s>]/i.test(html)) {
+                editor.innerHTML = '<p>' + html + '</p>';
+            }
+        })();
+        editor.addEventListener('focus', ensureParagraph);
+
+        function sync() {
+            ensureParagraph();
+            field.value = editor.innerHTML.trim();
+        }
 
         box.querySelectorAll('[data-cmd]').forEach(function (btn) {
             btn.addEventListener('click', function () {

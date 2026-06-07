@@ -16,6 +16,13 @@ Versionnage [SemVer](https://semver.org/lang/fr/) : `MAJEUR.MINEUR.CORRECTIF`.
   saisi est assaini côté serveur (liste blanche de balises, attributs et scripts
   neutralisés) puis affiché tel quel sur la page d'accueil.
 
+### Corrigé
+- **Sauts de ligne et paragraphes dans l'éditeur d'introduction** : la touche
+  Entrée crée désormais un vrai paragraphe (au lieu d'un `<div>` supprimé par
+  l'assainisseur, qui faisait s'effondrer le texte sur une seule ligne). Les
+  `<div>` éventuels sont normalisés en paragraphes et le contenu existant en texte
+  brut est enveloppé proprement à l'ouverture.
+
 ## [0.3.0] - 2026-06-01
 
 ### Modifié
