@@ -6,7 +6,7 @@
 ?>
 <section class="intro">
     <h1><?= e(cfg('site_title')) ?></h1>
-    <p><?= e(cfg('intro')) ?></p>
+    <div class="intro-text"><?= cfg('intro') /* HTML assaini à l'enregistrement */ ?></div>
 </section>
 
 <?php if ($flash): ?>

@@ -79,3 +79,32 @@ function leboncoin_url(string $terms): string {
 function vinted_url(string $terms): string {
     return 'https://www.vinted.fr/catalog?search_text=' . rawurlencode($terms);
 }
+
+// Assainit du HTML issu de l'éditeur WYSIWYG : ne conserve qu'une liste blanche de
+// balises, supprime tous les attributs (sauf un href sûr sur les liens) et neutralise
+// scripts et gestionnaires d'événements. Saisie réservée à l'administrateur, mais on
+// reste prudent car la valeur est ensuite affichée telle quelle.
+function sanitize_html(string $html): string {
+    $allowed = '<p><br><strong><b><em><i><u><ul><ol><li><a><h2><h3><blockquote>';
+    $html = strip_tags($html, $allowed);
+
+    $html = preg_replace_callback('/<(\/?)([a-z0-9]+)([^>]*)>/i', static function (array $m): string {
+        $close = $m[1];
+        $tag   = strtolower($m[2]);
+        if ($close === '/') {
+            return "</$tag>";
+        }
+        if ($tag === 'a') {
+            if (preg_match('/\bhref\s*=\s*("|\')(.*?)\1/i', $m[3], $h)) {
+                $href = trim(html_entity_decode($h[2], ENT_QUOTES, 'UTF-8'));
+                if (preg_match('#^(https?://|mailto:|/|\#)#i', $href)) {
+                    return '<a href="' . e($href) . '" target="_blank" rel="noopener nofollow">';
+                }
+            }
+            return '<a>';
+        }
+        return "<$tag>"; // toute autre balise autorisée : on retire ses attributs
+    }, $html);
+
+    return trim((string) $html);
+}

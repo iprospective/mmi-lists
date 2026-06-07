@@ -7,6 +7,12 @@ Versionnage [SemVer](https://semver.org/lang/fr/) : `MAJEUR.MINEUR.CORRECTIF`.
 
 ## [Non publié]
 
+### Ajouté
+- **Éditeur de texte enrichi (WYSIWYG)** pour le texte d'introduction dans les
+  paramètres : gras, italique, listes et liens, sans dépendance externe. Le HTML
+  saisi est assaini côté serveur (liste blanche de balises, attributs et scripts
+  neutralisés) puis affiché tel quel sur la page d'accueil.
+
 ## [0.3.0] - 2026-06-01
 
 ### Modifié

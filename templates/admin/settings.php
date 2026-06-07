@@ -14,9 +14,21 @@ require APP_ROOT . '/templates/layout/admin_nav.php';
         <input type="text" name="site_title" value="<?= e(cfg('site_title')) ?>" required>
     </label>
 
-    <label>Texte d'introduction
-        <textarea name="intro" rows="3"><?= e(cfg('intro')) ?></textarea>
-    </label>
+    <div class="field">
+        <span class="field-label">Texte d'introduction</span>
+        <div class="wysiwyg" data-target="intro-field">
+            <div class="wysiwyg-toolbar">
+                <button type="button" data-cmd="bold" title="Gras"><b>B</b></button>
+                <button type="button" data-cmd="italic" title="Italique"><i>I</i></button>
+                <button type="button" data-cmd="insertUnorderedList" title="Liste à puces">• Liste</button>
+                <button type="button" data-cmd="createLink" title="Insérer un lien">🔗 Lien</button>
+                <button type="button" data-cmd="unlink" title="Retirer le lien">Retirer lien</button>
+                <button type="button" data-cmd="removeFormat" title="Effacer la mise en forme">✗ Nettoyer</button>
+            </div>
+            <div id="intro-editor" class="wysiwyg-editor" contenteditable="true"><?= cfg('intro') ?></div>
+        </div>
+        <textarea id="intro-field" name="intro" class="wysiwyg-source" hidden><?= e(cfg('intro')) ?></textarea>
+    </div>
 
     <label>Parents <span class="muted">(affiché en bas de page)</span>
         <input type="text" name="parents" value="<?= e(cfg('parents')) ?>">
@@ -30,3 +42,34 @@ require APP_ROOT . '/templates/layout/admin_nav.php';
 </form>
 
 <p class="muted small">Le mot de passe administrateur se modifie dans <code>config.php</code>.</p>
+
+<script>
+(function () {
+    document.querySelectorAll('.wysiwyg').forEach(function (box) {
+        var editor = box.querySelector('.wysiwyg-editor');
+        var field  = document.getElementById(box.dataset.target);
+        if (!editor || !field) return;
+
+        function sync() { field.value = editor.innerHTML.trim(); }
+
+        box.querySelectorAll('[data-cmd]').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                var cmd = btn.dataset.cmd;
+                if (cmd === 'createLink') {
+                    var url = prompt('Adresse du lien (https://…)');
+                    if (url) { document.execCommand('createLink', false, url); }
+                } else {
+                    document.execCommand(cmd, false, null);
+                }
+                editor.focus();
+                sync();
+            });
+        });
+
+        editor.addEventListener('input', sync);
+        var form = box.closest('form');
+        if (form) { form.addEventListener('submit', sync); }
+        sync();
+    });
+})();
+</script>

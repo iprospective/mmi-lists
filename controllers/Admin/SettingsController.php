@@ -20,7 +20,7 @@ final class SettingsController extends BaseAdminController
                 $this->msgType = 'error';
             } else {
                 $settings->set('site_title', $title);
-                $settings->set('intro', trim((string) ($_POST['intro'] ?? '')));
+                $settings->set('intro', sanitize_html((string) ($_POST['intro'] ?? '')));
                 $settings->set('parents', trim((string) ($_POST['parents'] ?? '')));
                 // On ne vide pas le mot de passe si le champ est laissé vide.
                 $pwd = (string) ($_POST['guest_password'] ?? '');
