@@ -73,6 +73,20 @@ function photo_url(array $item): string {
     return url('assets/placeholder.svg');
 }
 
+// Indique si un article possède une vraie photo (sinon photo_url renvoie le visuel par défaut).
+function has_photo(array $item): bool {
+    $dir = APP_ROOT . '/img/products/';
+    if (!empty($item['photo']) && is_file($dir . $item['photo'])) {
+        return true;
+    }
+    foreach (['jpg', 'jpeg', 'png', 'gif', 'webp'] as $ext) {
+        if (is_file($dir . ($item['slug'] ?? '') . '.' . $ext)) {
+            return true;
+        }
+    }
+    return false;
+}
+
 function leboncoin_url(string $terms): string {
     return 'https://www.leboncoin.fr/recherche?text=' . rawurlencode($terms);
 }

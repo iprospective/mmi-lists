@@ -94,6 +94,27 @@ button:hover { background: var(--accent-dark); }
 .card.is-complete { opacity: .72; }
 .card-photo { position: relative; aspect-ratio: 4/3; background: #f1ebe4; }
 .card-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.card-photo img.zoomable { cursor: zoom-in; }
+
+/* Agrandissement des photos (lightbox) */
+.lightbox {
+    position: fixed; inset: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: center;
+    padding: 24px; background: rgba(34, 24, 18, 0.82); cursor: zoom-out;
+}
+.lightbox[hidden] { display: none; }
+.lightbox-img {
+    max-width: min(96vw, 1000px); max-height: 92vh;
+    object-fit: contain; border-radius: 12px; background: #fff;
+    box-shadow: 0 12px 44px rgba(0, 0, 0, .5);
+}
+.lightbox-close {
+    position: absolute; top: 16px; right: 20px;
+    width: 44px; height: 44px; border-radius: 50%;
+    background: rgba(255, 255, 255, .16); color: #fff; font-size: 1.2rem; line-height: 1;
+    display: flex; align-items: center; justify-content: center; cursor: pointer;
+}
+.lightbox-close:hover { background: rgba(255, 255, 255, .32); }
 .ribbon {
     position: absolute; top: 10px; right: 10px; background: var(--green);
     color: #fff; padding: 4px 10px; border-radius: 999px; font-size: .8rem; font-weight: 600;

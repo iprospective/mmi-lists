@@ -8,6 +8,10 @@ Versionnage [SemVer](https://semver.org/lang/fr/) : `MAJEUR.MINEUR.CORRECTIF`.
 ## [Non publié]
 
 ### Ajouté
+- **Agrandissement des photos sur la page d'accueil** : un clic (ou la touche
+  Entrée) ouvre la photo en plein écran ; clic n'importe où ou Échap pour fermer.
+  Sans dépendance externe (`assets/lightbox.js`) ; seules les vraies photos sont
+  cliquables, pas le visuel par défaut.
 - **Filtres dans l'administration des articles** : par catégorie, par niveau
   d'utilité (« + » / « ++ ») et par « besoin tôt », combinables et conservés dans
   l'URL (donc maintenus après une modification). La réorganisation est désactivée

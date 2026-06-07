@@ -40,10 +40,13 @@ foreach ($byCat as $catItems) {
             $unlimited = $it['qty_needed'] === null;
             $complete  = $it['complete'];
             $remaining = $it['remaining'];
+            $zoom      = has_photo($it);
         ?>
             <article class="card <?= $complete ? 'is-complete' : '' ?>">
                 <div class="card-photo">
-                    <img src="<?= e(photo_url($it)) ?>" alt="<?= e($it['name']) ?>" loading="lazy">
+                    <img src="<?= e(photo_url($it)) ?>" alt="<?= e($it['name']) ?>" loading="lazy"
+                         class="<?= $zoom ? 'zoomable' : '' ?>"
+                         <?php if ($zoom): ?>tabindex="0" role="button" aria-label="Agrandir la photo : <?= e($it['name']) ?>"<?php endif; ?>>
                     <?php if ($complete): ?><span class="ribbon">Déjà offert 🎉</span><?php endif; ?>
                 </div>
                 <div class="card-body">
@@ -126,3 +129,9 @@ foreach ($byCat as $catItems) {
         <?php endforeach; ?>
     </div>
 <?php endforeach; ?>
+
+<div id="lightbox" class="lightbox" hidden aria-hidden="true" role="dialog" aria-modal="true" aria-label="Photo agrandie">
+    <button type="button" class="lightbox-close" aria-label="Fermer">✕</button>
+    <img class="lightbox-img" src="" alt="">
+</div>
+<script src="<?= e(url('assets/lightbox.js')) ?>" defer></script>
