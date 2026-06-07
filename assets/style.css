@@ -35,6 +35,7 @@ a { color: var(--accent-dark); }
 main.wrap { padding: 28px 0 60px; }
 
 /* Intro */
+.intro { display: flow-root; } /* contient la photo flottante */
 .intro h1 { margin: .2em 0; font-size: 1.8rem; }
 .intro p { max-width: 70ch; color: #5a514b; }
 
@@ -244,10 +245,27 @@ details.reserve[open] summary { margin-bottom: 10px; }
 .admin-add summary { cursor: pointer; font-weight: 600; }
 
 /* Photo d'en-tête (sujet de la liste) sur la page d'accueil. */
+/* Bandeau pleine largeur. */
 .hero { margin: 0 0 20px; }
 .hero img {
-    display: block; width: 100%; max-height: 320px; object-fit: cover;
+    display: block; width: 100%; max-height: 320px;
     border-radius: var(--radius); box-shadow: var(--shadow);
+}
+.hero--cover img { object-fit: cover; }                       /* rogné pour remplir */
+.hero--contain img { object-fit: contain; background: var(--card); } /* image entière */
+
+/* Photo flottante à gauche / à droite du texte d'introduction. */
+.intro-photo {
+    width: 40%; max-width: 280px;
+    border-radius: var(--radius); box-shadow: var(--shadow);
+}
+.intro-photo--right { float: right; margin: 4px 0 12px 22px; }
+.intro-photo--left  { float: left;  margin: 4px 22px 12px 0; }
+.intro-photo--cover { aspect-ratio: 4 / 3; object-fit: cover; }       /* rogné */
+.intro-photo--contain { height: auto; }                                /* image entière */
+
+@media (max-width: 560px) {
+    .intro-photo { float: none; width: 100%; max-width: none; margin: 0 0 14px; }
 }
 
 /* Cœur du pied de page, recolorable via la charte graphique. */
@@ -263,6 +281,11 @@ details.reserve[open] summary { margin-bottom: 10px; }
 .reset-color { font-size: .76rem; }
 span.reset-color { opacity: .7; }
 .header-preview img { width: 100%; max-height: 220px; object-fit: cover; border-radius: 10px; margin-bottom: 10px; }
+.header-display { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 14px; margin-top: 12px; }
+.header-display label { display: flex; flex-direction: column; gap: 4px; font-size: .82rem; }
+.header-display select { width: auto; }
+button.secondary { background: var(--card); color: var(--ink); border: 1px solid var(--line); box-shadow: none; }
+button.secondary:hover { background: #f1ebe4; }
 .inline-remove { margin-top: 8px; }
 
 @media (max-width: 560px) {

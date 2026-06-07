@@ -6,7 +6,7 @@ require APP_ROOT . '/templates/layout/admin_nav.php';
 <h1 class="admin-h1">⚙️ Paramètres</h1>
 <?php if ($msg): ?><p class="alert <?= e($msgType) ?>"><?= e($msg) ?></p><?php endif; ?>
 
-<form method="post" class="stack admin-settings">
+<form id="settings-form" method="post" class="stack admin-settings">
     <input type="hidden" name="action" value="save_settings">
     <input type="hidden" name="csrf" value="<?= e(csrf_token()) ?>">
 
@@ -101,6 +101,29 @@ require APP_ROOT . '/templates/layout/admin_nav.php';
             <button type="submit" class="link-btn">Retirer la photo</button>
         </form>
     <?php endif; ?>
+
+    <?php
+    // Affichage de la photo : rattaché au formulaire principal (form="settings-form").
+    $headerPos = (string) cfg('header_position', 'banner');
+    $headerFmt = (string) cfg('header_format', 'cover');
+    ?>
+    <div class="header-display">
+        <label>Position
+            <select name="header_position" form="settings-form">
+                <option value="banner" <?= $headerPos === 'banner' ? 'selected' : '' ?>>Bandeau en haut</option>
+                <option value="right" <?= $headerPos === 'right' ? 'selected' : '' ?>>À droite du texte</option>
+                <option value="left" <?= $headerPos === 'left' ? 'selected' : '' ?>>À gauche du texte</option>
+            </select>
+        </label>
+        <label>Format
+            <select name="header_format" form="settings-form">
+                <option value="cover" <?= $headerFmt === 'cover' ? 'selected' : '' ?>>Rogné (remplit le cadre)</option>
+                <option value="contain" <?= $headerFmt === 'contain' ? 'selected' : '' ?>>Image entière</option>
+            </select>
+        </label>
+        <button type="submit" form="settings-form" class="secondary">Enregistrer l'affichage</button>
+    </div>
+    <p class="muted small">La position et le format s'appliquent dès qu'une photo d'en-tête est définie.</p>
 </fieldset>
 
 <p class="muted small">Le mot de passe administrateur se modifie dans <code>config.php</code>.</p>

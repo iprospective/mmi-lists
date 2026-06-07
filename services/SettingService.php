@@ -11,14 +11,20 @@ final class SettingService
     // Clés pilotées depuis l'interface d'administration.
     public const MANAGED = [
         'site_title', 'intro', 'parents', 'guest_password',
-        'theme_bg', 'theme_heart', 'theme_button', 'header_photo',
+        'theme_bg', 'theme_heart', 'theme_button',
+        'header_photo', 'header_position', 'header_format',
     ];
 
-    // Valeurs par défaut pour les clés absentes de config.php (charte graphique).
+    // Couleurs de la charte (réinitialisables individuellement).
+    public const THEME_COLORS = ['theme_bg', 'theme_heart', 'theme_button'];
+
+    // Valeurs par défaut pour les clés absentes de config.php (charte + mise en page).
     public const DEFAULTS = [
-        'theme_bg'     => '#fbf7f2',
-        'theme_heart'  => '#6fae8e',
-        'theme_button' => '#e9a17c',
+        'theme_bg'        => '#fbf7f2',
+        'theme_heart'     => '#6fae8e',
+        'theme_button'    => '#e9a17c',
+        'header_position' => 'banner', // banner | left | right
+        'header_format'   => 'cover',  // cover (rogné) | contain (image entière)
     ];
 
     public function __construct(private PDO $pdo) {}

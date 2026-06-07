@@ -51,6 +51,11 @@ final class SettingsController extends BaseAdminController
         $settings->set('theme_bg', css_color($_POST['theme_bg'] ?? null, '#fbf7f2'));
         $settings->set('theme_heart', css_color($_POST['theme_heart'] ?? null, '#6fae8e'));
         $settings->set('theme_button', css_color($_POST['theme_button'] ?? null, '#e9a17c'));
+        // Affichage de la photo d'en-tête : position et format (valeurs imposées).
+        $pos = (string) ($_POST['header_position'] ?? 'banner');
+        $settings->set('header_position', in_array($pos, ['banner', 'left', 'right'], true) ? $pos : 'banner');
+        $fmt = (string) ($_POST['header_format'] ?? 'cover');
+        $settings->set('header_format', in_array($fmt, ['cover', 'contain'], true) ? $fmt : 'cover');
         $this->msg = "Paramètres enregistrés.";
     }
 
@@ -58,7 +63,7 @@ final class SettingsController extends BaseAdminController
     private function resetColor(SettingService $settings): void
     {
         $key = (string) ($_POST['color'] ?? '');
-        if (!array_key_exists($key, SettingService::DEFAULTS)) {
+        if (!in_array($key, SettingService::THEME_COLORS, true)) {
             $this->msg = "Couleur inconnue.";
             $this->msgType = 'error';
             return;

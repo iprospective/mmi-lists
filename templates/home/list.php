@@ -5,14 +5,24 @@
 /** @var array $myTokens */
 ?>
 <?php
-// Photo d'en-tête (sujet de la liste), réglable depuis l'administration.
+// Photo d'en-tête (sujet de la liste), réglable depuis l'administration :
+// position (bandeau / flottante à gauche / à droite) et format (rogné / image entière).
 $headerPhoto = (string) cfg('header_photo', '');
-if ($headerPhoto !== '' && is_file(APP_ROOT . '/img/' . $headerPhoto)):
-    $headerSrc = url('img/' . rawurlencode($headerPhoto)) . '?v=' . filemtime(APP_ROOT . '/img/' . $headerPhoto);
+$hasHeader   = $headerPhoto !== '' && is_file(APP_ROOT . '/img/' . $headerPhoto);
+$headerSrc   = $hasHeader ? url('img/' . rawurlencode($headerPhoto)) . '?v=' . filemtime(APP_ROOT . '/img/' . $headerPhoto) : '';
+$headerPos   = (string) cfg('header_position', 'banner');
+$headerFmt   = (string) cfg('header_format', 'cover');
+if (!in_array($headerPos, ['banner', 'left', 'right'], true)) { $headerPos = 'banner'; }
+if (!in_array($headerFmt, ['cover', 'contain'], true)) { $headerFmt = 'cover'; }
+$isBanner    = $headerPos === 'banner';
 ?>
-    <div class="hero"><img src="<?= e($headerSrc) ?>" alt="<?= e(cfg('site_title')) ?>"></div>
+<?php if ($hasHeader && $isBanner): ?>
+    <div class="hero hero--<?= e($headerFmt) ?>"><img src="<?= e($headerSrc) ?>" alt="<?= e(cfg('site_title')) ?>"></div>
 <?php endif; ?>
 <section class="intro">
+    <?php if ($hasHeader && !$isBanner): ?>
+        <img class="intro-photo intro-photo--<?= e($headerPos) ?> intro-photo--<?= e($headerFmt) ?>" src="<?= e($headerSrc) ?>" alt="<?= e(cfg('site_title')) ?>">
+    <?php endif; ?>
     <h1><?= e(cfg('site_title')) ?></h1>
     <div class="intro-text"><?= cfg('intro') /* HTML assaini à l'enregistrement */ ?></div>
 </section>

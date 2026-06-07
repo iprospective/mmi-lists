@@ -14,9 +14,11 @@ Versionnage [SemVer](https://semver.org/lang/fr/) : `MAJEUR.MINEUR.CORRECTIF`.
   injectées en variables CSS ; le cœur du pied de page devient un visuel recolorable.
   Chaque couleur personnalisée peut être réinitialisée à sa valeur par défaut d'un
   clic (le bouton n'apparaît que si la couleur a été modifiée).
-- **Photo d'en-tête de la liste** : une bannière illustrant le thème de la liste,
-  téléversée depuis l'administration (avec aperçu et possibilité de la retirer) et
-  affichée en haut de la page d'accueil.
+- **Photo d'en-tête de la liste** : une image illustrant le thème de la liste,
+  téléversée depuis l'administration (avec aperçu et possibilité de la retirer). Sa
+  **position** (bandeau en haut, ou flottante à droite / à gauche du texte
+  d'introduction) et son **format** (rognée pour remplir le cadre, ou image entière)
+  sont réglables ; l'affichage repasse en pleine largeur sur mobile.
 - **Agrandissement des photos sur la page d'accueil** : un clic (ou la touche
   Entrée) ouvre la photo en plein écran ; clic n'importe où ou Échap pour fermer.
   Sans dépendance externe (`assets/lightbox.js`) ; seules les vraies photos sont
