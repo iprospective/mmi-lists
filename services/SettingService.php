@@ -9,7 +9,17 @@ use PDO;
 final class SettingService
 {
     // Clés pilotées depuis l'interface d'administration.
-    public const MANAGED = ['site_title', 'intro', 'parents', 'guest_password'];
+    public const MANAGED = [
+        'site_title', 'intro', 'parents', 'guest_password',
+        'theme_bg', 'theme_heart', 'theme_button', 'header_photo',
+    ];
+
+    // Valeurs par défaut pour les clés absentes de config.php (charte graphique).
+    public const DEFAULTS = [
+        'theme_bg'     => '#fbf7f2',
+        'theme_heart'  => '#6fae8e',
+        'theme_button' => '#e9a17c',
+    ];
 
     public function __construct(private PDO $pdo) {}
 
@@ -35,8 +45,12 @@ final class SettingService
         $has = $this->pdo->prepare("SELECT 1 FROM settings WHERE key = ?");
         foreach (self::MANAGED as $k) {
             $has->execute([$k]);
-            if (!$has->fetchColumn() && isset($config[$k])) {
-                $this->set($k, (string) $config[$k]);
+            if ($has->fetchColumn()) {
+                continue;
+            }
+            $value = $config[$k] ?? self::DEFAULTS[$k] ?? null;
+            if ($value !== null) {
+                $this->set($k, (string) $value);
             }
         }
     }

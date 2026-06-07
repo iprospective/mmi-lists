@@ -19,4 +19,10 @@ return [
 
     // Mot de passe d'ADMINISTRATION (page admin.php : photos + réservations)
     'admin_password' => 'changez-moi-vite',
+
+    // Charte graphique (facultatif) : se règle aussi depuis l'administration.
+    // Couleurs au format hexadécimal (#rgb ou #rrggbb).
+    'theme_bg'     => '#fbf7f2', // couleur de fond
+    'theme_heart'  => '#6fae8e', // couleur des cœurs et accents « offert »
+    'theme_button' => '#e9a17c', // couleur des boutons
 ];

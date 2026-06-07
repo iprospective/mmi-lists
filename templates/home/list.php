@@ -4,6 +4,14 @@
 /** @var ?array $flash */
 /** @var array $myTokens */
 ?>
+<?php
+// Photo d'en-tête (sujet de la liste), réglable depuis l'administration.
+$headerPhoto = (string) cfg('header_photo', '');
+if ($headerPhoto !== '' && is_file(APP_ROOT . '/img/' . $headerPhoto)):
+    $headerSrc = url('img/' . rawurlencode($headerPhoto)) . '?v=' . filemtime(APP_ROOT . '/img/' . $headerPhoto);
+?>
+    <div class="hero"><img src="<?= e($headerSrc) ?>" alt="<?= e(cfg('site_title')) ?>"></div>
+<?php endif; ?>
 <section class="intro">
     <h1><?= e(cfg('site_title')) ?></h1>
     <div class="intro-text"><?= cfg('intro') /* HTML assaini à l'enregistrement */ ?></div>

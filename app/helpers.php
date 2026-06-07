@@ -87,6 +87,32 @@ function has_photo(array $item): bool {
     return false;
 }
 
+// Valide une couleur hexadécimale (#abc ou #aabbcc) saisie en administration, pour
+// éviter toute injection dans le bloc <style> (e() n'échappe pas ; { } des CSS).
+function css_color(?string $value, string $default): string {
+    $value = trim((string) $value);
+    return preg_match('/^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/', $value) ? $value : $default;
+}
+
+// Éclaircit (pourcentage positif) ou assombrit (négatif) une couleur hexadécimale.
+// Sert à dériver la teinte foncée des boutons à partir de la couleur choisie.
+function shade_color(string $hex, float $percent): string {
+    $hex = ltrim($hex, '#');
+    if (strlen($hex) === 3) {
+        $hex = $hex[0] . $hex[0] . $hex[1] . $hex[1] . $hex[2] . $hex[2];
+    }
+    if (strlen($hex) !== 6) {
+        return '#' . $hex;
+    }
+    $out = '#';
+    for ($i = 0; $i < 3; $i++) {
+        $c = (int) hexdec(substr($hex, $i * 2, 2));
+        $c = (int) round($c + ($percent / 100) * ($percent < 0 ? $c : 255 - $c));
+        $out .= str_pad(dechex(max(0, min(255, $c))), 2, '0', STR_PAD_LEFT);
+    }
+    return $out;
+}
+
 function leboncoin_url(string $terms): string {
     return 'https://www.leboncoin.fr/recherche?text=' . rawurlencode($terms);
 }

@@ -38,8 +38,55 @@ require APP_ROOT . '/templates/layout/admin_nav.php';
         <input type="text" name="guest_password" value="" placeholder="•••••••• (inchangé)" autocomplete="off">
     </label>
 
+    <fieldset class="theme-fields">
+        <legend>Charte graphique</legend>
+        <div class="theme-colors">
+            <label>Couleur de fond
+                <input type="color" name="theme_bg" value="<?= e(css_color(cfg('theme_bg'), '#fbf7f2')) ?>">
+            </label>
+            <label>Couleur des cœurs
+                <input type="color" name="theme_heart" value="<?= e(css_color(cfg('theme_heart'), '#6fae8e')) ?>">
+            </label>
+            <label>Couleur des boutons
+                <input type="color" name="theme_button" value="<?= e(css_color(cfg('theme_button'), '#e9a17c')) ?>">
+            </label>
+        </div>
+    </fieldset>
+
     <button type="submit">Enregistrer</button>
 </form>
+
+<fieldset class="theme-fields">
+    <legend>Photo d'en-tête</legend>
+    <?php
+    $headerPhoto = (string) cfg('header_photo', '');
+    $hasHeader = $headerPhoto !== '' && is_file(APP_ROOT . '/img/' . $headerPhoto);
+    ?>
+    <?php if ($hasHeader): ?>
+        <div class="header-preview">
+            <img src="<?= e(url('img/' . rawurlencode($headerPhoto)) . '?v=' . filemtime(APP_ROOT . '/img/' . $headerPhoto)) ?>" alt="En-tête actuel">
+        </div>
+    <?php else: ?>
+        <p class="muted small">Aucune photo d'en-tête pour le moment.</p>
+    <?php endif; ?>
+
+    <form method="post" enctype="multipart/form-data" class="stack">
+        <input type="hidden" name="action" value="upload_header">
+        <input type="hidden" name="csrf" value="<?= e(csrf_token()) ?>">
+        <label>Choisir une image <span class="muted">(JPG, PNG, GIF ou WEBP, 8 Mo max)</span>
+            <input type="file" name="header" accept="image/*" required>
+        </label>
+        <button type="submit"><?= $hasHeader ? 'Remplacer la photo' : 'Ajouter la photo' ?></button>
+    </form>
+
+    <?php if ($hasHeader): ?>
+        <form method="post" class="inline-remove" onsubmit="return confirm('Retirer la photo d\'en-tête ?');">
+            <input type="hidden" name="action" value="remove_header">
+            <input type="hidden" name="csrf" value="<?= e(csrf_token()) ?>">
+            <button type="submit" class="link-btn">Retirer la photo</button>
+        </form>
+    <?php endif; ?>
+</fieldset>
 
 <p class="muted small">Le mot de passe administrateur se modifie dans <code>config.php</code>.</p>
 

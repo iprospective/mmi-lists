@@ -7,6 +7,13 @@
     <meta name="robots" content="noindex, nofollow">
     <title><?= e($pageTitle ?? cfg('site_title')) ?></title>
     <link rel="stylesheet" href="<?= e(url('assets/style.css')) ?>">
+    <?php
+    // Charte graphique pilotée depuis l'administration (couleurs validées en hexa).
+    $themeBg     = css_color(cfg('theme_bg'), '#fbf7f2');
+    $themeHeart  = css_color(cfg('theme_heart'), '#6fae8e');
+    $themeButton = css_color(cfg('theme_button'), '#e9a17c');
+    ?>
+    <style>:root{--bg:<?= $themeBg ?>;--green:<?= $themeHeart ?>;--accent:<?= $themeButton ?>;--accent-dark:<?= shade_color($themeButton, -16) ?>;}</style>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👶</text></svg>">
 </head>
 <body>

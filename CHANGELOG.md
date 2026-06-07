@@ -8,6 +8,13 @@ Versionnage [SemVer](https://semver.org/lang/fr/) : `MAJEUR.MINEUR.CORRECTIF`.
 ## [Non publié]
 
 ### Ajouté
+- **Charte graphique réglable depuis l'administration** : couleur de fond, couleur
+  des cœurs (et accents « déjà offert ») et couleur des boutons, choisies via des
+  sélecteurs de couleur. Les valeurs sont validées en hexadécimal côté serveur puis
+  injectées en variables CSS ; le cœur du pied de page devient un visuel recolorable.
+- **Photo d'en-tête de la liste** : une bannière illustrant le thème de la liste,
+  téléversée depuis l'administration (avec aperçu et possibilité de la retirer) et
+  affichée en haut de la page d'accueil.
 - **Agrandissement des photos sur la page d'accueil** : un clic (ou la touche
   Entrée) ouvre la photo en plein écran ; clic n'importe où ou Échap pour fermer.
   Sans dépendance externe (`assets/lightbox.js`) ; seules les vraies photos sont
