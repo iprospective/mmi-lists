@@ -25,16 +25,32 @@ require APP_ROOT . '/templates/layout/admin_nav.php';
     </form>
 </details>
 
+<?php
+$byCat = [];
+foreach ($items as $it) {
+    $byCat[$it['category']][] = $it;
+}
+?>
+<?php foreach ($byCat as $cat => $catItems): ?>
+<h2 class="cat-title"><?= e($catItems[0]['category_icon'] ?? '🎁') ?> <?= e($cat) ?> <span class="muted small">(<?= count($catItems) ?>)</span></h2>
 <div class="admin-list">
-    <?php foreach ($items as $it): ?>
-        <article class="admin-item">
+    <?php foreach ($catItems as $idx => $it): ?>
+        <article class="admin-item" id="item-<?= (int) $it['id'] ?>">
             <div class="admin-thumb">
                 <img src="<?= e(photo_url($it)) ?>" alt="">
             </div>
             <div class="admin-fields">
-                <p class="muted small">
-                    <?= e($it['category_icon'] ?? '🎁') ?> <?= e($it['category']) ?>
-                    · réservé <?= (int) $it['reserved'] ?><?= $it['qty_needed'] !== null ? ' / ' . (int) $it['qty_needed'] : ' (illimité)' ?>
+                <p class="muted small admin-item-meta">
+                    <span class="admin-move">
+                        <form method="post" class="inline-form">
+                            <input type="hidden" name="action" value="move_item">
+                            <input type="hidden" name="csrf" value="<?= e(csrf_token()) ?>">
+                            <input type="hidden" name="item_id" value="<?= (int) $it['id'] ?>">
+                            <button type="submit" name="dir" value="up" class="link-btn" <?= $idx === 0 ? 'disabled' : '' ?> title="Monter">▲</button>
+                            <button type="submit" name="dir" value="down" class="link-btn" <?= $idx === count($catItems) - 1 ? 'disabled' : '' ?> title="Descendre">▼</button>
+                        </form>
+                    </span>
+                    réservé <?= (int) $it['reserved'] ?><?= $it['qty_needed'] !== null ? ' / ' . (int) $it['qty_needed'] : ' (illimité)' ?>
                 </p>
 
                 <form method="post" class="stack" enctype="multipart/form-data">
@@ -93,3 +109,4 @@ require APP_ROOT . '/templates/layout/admin_nav.php';
         </article>
     <?php endforeach; ?>
 </div>
+<?php endforeach; ?>

@@ -8,6 +8,8 @@ Versionnage [SemVer](https://semver.org/lang/fr/) : `MAJEUR.MINEUR.CORRECTIF`.
 ## [Non publié]
 
 ### Ajouté
+- **Articles regroupés par catégorie dans l'administration**, avec des flèches
+  ▲ / ▼ pour changer l'ordre d'affichage d'un article au sein de sa catégorie.
 - **Étiquettes de besoin sur les articles** : niveau « + » (utile) ou « ++ » (très
   utile) et marqueur « ⏱ Besoin tôt », réglables depuis l'administration et
   affichés sous forme de badges sur la page d'accueil.
@@ -15,6 +17,11 @@ Versionnage [SemVer](https://semver.org/lang/fr/) : `MAJEUR.MINEUR.CORRECTIF`.
   paramètres : gras, italique, listes et liens, sans dépendance externe. Le HTML
   saisi est assaini côté serveur (liste blanche de balises, attributs et scripts
   neutralisés) puis affiché tel quel sur la page d'accueil.
+
+### Modifié
+- Après l'enregistrement (ou le déplacement) d'un article en administration, la
+  page se recharge directement sur l'article concerné (ancre `#`) au lieu de
+  revenir en haut.
 
 ### Corrigé
 - **Sauts de ligne et paragraphes dans l'éditeur d'introduction** : la touche

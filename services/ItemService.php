@@ -49,12 +49,39 @@ final class ItemService
         return $stmt->fetch() ?: null;
     }
 
-    public function create(string $name, string $category): void
+    public function create(string $name, string $category): int
     {
         $slug = $this->uniqueSlug($name);
         $maxOrder = (int) $this->pdo->query("SELECT COALESCE(MAX(sort_order),0)+1 FROM items")->fetchColumn();
         $this->pdo->prepare("INSERT INTO items (slug, category, name, sort_order) VALUES (?,?,?,?)")
             ->execute([$slug, $category, $name, $maxOrder]);
+        return (int) $this->pdo->lastInsertId();
+    }
+
+    // Déplace un article vers le haut/bas dans sa catégorie (échange l'ordre avec son voisin).
+    public function move(int $id, string $dir): void
+    {
+        $item = $this->find($id);
+        if (!$item) {
+            return;
+        }
+        $stmt = $this->pdo->prepare("SELECT id, sort_order FROM items WHERE category = ? ORDER BY sort_order, id");
+        $stmt->execute([$item['category']]);
+        $list = $stmt->fetchAll();
+        $ids = array_map(static fn ($r) => (int) $r['id'], $list);
+        $pos = array_search($id, $ids, true);
+        if ($pos === false) {
+            return;
+        }
+        $swap = $dir === 'up' ? $pos - 1 : $pos + 1;
+        if ($swap < 0 || $swap >= count($list)) {
+            return;
+        }
+        $a = $list[$pos];
+        $b = $list[$swap];
+        $upd = $this->pdo->prepare("UPDATE items SET sort_order = ? WHERE id = ?");
+        $upd->execute([(int) $b['sort_order'], (int) $a['id']]);
+        $upd->execute([(int) $a['sort_order'], (int) $b['id']]);
     }
 
     public function update(int $id, string $name, string $category, string $description, string $search, ?int $qtyNeeded, int $priority = 0, int $neededEarly = 0): void

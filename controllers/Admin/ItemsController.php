@@ -16,24 +16,28 @@ final class ItemsController extends BaseAdminController
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && check_csrf()) {
             $action = $_POST['action'] ?? '';
+            $type   = 'ok';
+            $msg    = '';
+            $anchor = '';
 
             if ($action === 'upload_photo') {
                 $item = $items->find((int) ($_POST['item_id'] ?? 0));
                 if ($item && isset($_FILES['photo'])) {
                     $res = $items->savePhoto($item, $_FILES['photo']);
-                    $this->msg = $res['msg'];
-                    $this->msgType = $res['ok'] ? 'ok' : 'error';
+                    $msg  = $res['msg'];
+                    $type = $res['ok'] ? 'ok' : 'error';
+                    $anchor = 'item-' . (int) $item['id'];
                 } else {
-                    $this->msg = "Aucun fichier reçu.";
-                    $this->msgType = 'error';
+                    $msg = "Aucun fichier reçu.";
+                    $type = 'error';
                 }
             }
 
             elseif ($action === 'save_item') {
                 $name = trim((string) ($_POST['name'] ?? ''));
                 if ($name === '') {
-                    $this->msg = "Le nom ne peut pas être vide.";
-                    $this->msgType = 'error';
+                    $msg = "Le nom ne peut pas être vide.";
+                    $type = 'error';
                 } else {
                     $qtyRaw = trim((string) ($_POST['qty_needed'] ?? ''));
                     $qty = ($qtyRaw === '' || strtolower($qtyRaw) === 'illimité') ? null : max(0, (int) $qtyRaw);
@@ -49,25 +53,42 @@ final class ItemsController extends BaseAdminController
                         $priority,
                         $early
                     );
-                    $this->msg = "Article mis à jour.";
+                    $msg = "Article mis à jour.";
                 }
+                $anchor = 'item-' . (int) ($_POST['item_id'] ?? 0);
+            }
+
+            elseif ($action === 'move_item') {
+                $items->move((int) ($_POST['item_id'] ?? 0), ($_POST['dir'] ?? '') === 'up' ? 'up' : 'down');
+                $anchor = 'item-' . (int) ($_POST['item_id'] ?? 0);
             }
 
             elseif ($action === 'add_item') {
                 $name = trim((string) ($_POST['name'] ?? ''));
                 if ($name === '') {
-                    $this->msg = "Indiquez au moins un nom.";
-                    $this->msgType = 'error';
+                    $msg = "Indiquez au moins un nom.";
+                    $type = 'error';
                 } else {
-                    $items->create($name, trim((string) ($_POST['category'] ?? '')));
-                    $this->msg = "Article « " . $name . " » ajouté.";
+                    $newId = $items->create($name, trim((string) ($_POST['category'] ?? '')));
+                    $msg = "Article « " . $name . " » ajouté.";
+                    $anchor = 'item-' . $newId;
                 }
             }
 
             elseif ($action === 'delete_item') {
                 $items->delete((int) ($_POST['item_id'] ?? 0));
-                $this->msg = "Article supprimé (et ses réservations).";
+                $msg = "Article supprimé (et ses réservations).";
             }
+
+            if ($msg !== '') {
+                flash($type, $msg);
+            }
+            redirect('admin' . ($anchor !== '' ? '#' . $anchor : ''));
+        }
+
+        if ($f = take_flash()) {
+            $this->msg = $f['msg'];
+            $this->msgType = $f['type'];
         }
 
         $this->render('admin/items', [
