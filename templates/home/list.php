@@ -36,7 +36,9 @@
                         </div>
                     <?php endif; ?>
                     <h3><?= e($it['name']) ?></h3>
-                    <p class="desc"><?= e($it['description']) ?></p>
+                    <?php if (trim((string) $it['description']) !== ''): ?>
+                        <div class="desc"><?= $it['description'] /* HTML assaini à l'enregistrement */ ?></div>
+                    <?php endif; ?>
 
                     <?php if ($unlimited): ?>
                         <p class="qty muted">Plusieurs personnes peuvent participer 🤗

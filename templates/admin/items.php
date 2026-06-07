@@ -78,7 +78,21 @@ foreach ($items as $it) {
                             <?php endif; ?>
                         </select>
                     </label>
-                    <label>Description <textarea name="description" rows="2"><?= e($it['description']) ?></textarea></label>
+                    <div class="field">
+                        <span class="field-label">Description</span>
+                        <div class="wysiwyg" data-target="desc-field-<?= (int) $it['id'] ?>">
+                            <div class="wysiwyg-toolbar">
+                                <button type="button" data-cmd="bold" title="Gras"><b>B</b></button>
+                                <button type="button" data-cmd="italic" title="Italique"><i>I</i></button>
+                                <button type="button" data-cmd="insertUnorderedList" title="Liste à puces">• Liste</button>
+                                <button type="button" data-cmd="createLink" title="Insérer un lien">🔗 Lien</button>
+                                <button type="button" data-cmd="unlink" title="Retirer le lien">Retirer lien</button>
+                                <button type="button" data-cmd="removeFormat" title="Effacer la mise en forme">✗ Nettoyer</button>
+                            </div>
+                            <div class="wysiwyg-editor" contenteditable="true"><?= sanitize_html((string) $it['description']) ?></div>
+                        </div>
+                        <textarea id="desc-field-<?= (int) $it['id'] ?>" name="description" hidden><?= e($it['description']) ?></textarea>
+                    </div>
                     <label>Quantité souhaitée <span class="muted">(vide = illimité)</span>
                         <input type="text" name="qty_needed" value="<?= $it['qty_needed'] === null ? '' : (int) $it['qty_needed'] ?>">
                     </label>
@@ -110,3 +124,5 @@ foreach ($items as $it) {
     <?php endforeach; ?>
 </div>
 <?php endforeach; ?>
+
+<script src="<?= e(url('assets/wysiwyg.js')) ?>" defer></script>

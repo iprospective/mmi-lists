@@ -43,11 +43,14 @@ final class ItemsController extends BaseAdminController
                     $qty = ($qtyRaw === '' || strtolower($qtyRaw) === 'illimité') ? null : max(0, (int) $qtyRaw);
                     $priority = max(0, min(2, (int) ($_POST['priority'] ?? 0)));
                     $early = isset($_POST['needed_early']) ? 1 : 0;
+                    $descHtml = sanitize_html((string) ($_POST['description'] ?? ''));
+                    // Évite de stocker un paragraphe vide (« <p><br></p> ») quand il n'y a pas de texte.
+                    $description = trim(strip_tags(str_ireplace(['<br>', '<br/>', '<br />'], '', $descHtml))) === '' ? '' : $descHtml;
                     $items->update(
                         (int) ($_POST['item_id'] ?? 0),
                         $name,
                         trim((string) ($_POST['category'] ?? '')),
-                        trim((string) ($_POST['description'] ?? '')),
+                        $description,
                         trim((string) ($_POST['search'] ?? '')),
                         $qty,
                         $priority,
