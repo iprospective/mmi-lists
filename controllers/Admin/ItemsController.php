@@ -86,7 +86,9 @@ final class ItemsController extends BaseAdminController
             if ($msg !== '') {
                 flash($type, $msg);
             }
-            redirect('admin' . ($anchor !== '' ? '#' . $anchor : ''));
+            // Conserve les filtres actifs (transmis dans l'URL des formulaires) après l'action.
+            $qs = (string) ($_SERVER['QUERY_STRING'] ?? '');
+            redirect('admin' . ($qs !== '' ? '?' . $qs : '') . ($anchor !== '' ? '#' . $anchor : ''));
         }
 
         if ($f = take_flash()) {
@@ -94,9 +96,33 @@ final class ItemsController extends BaseAdminController
             $this->msgType = $f['type'];
         }
 
+        // Filtres (catégorie, utilité, urgence) transmis dans l'URL.
+        $fCat   = trim((string) ($_GET['category'] ?? ''));
+        $fPrio  = ($_GET['priority'] ?? '') === '' ? '' : (string) (int) $_GET['priority'];
+        $fEarly = ($_GET['early'] ?? '') === '1' ? '1' : '';
+
+        $all = $items->all();
+        $filtered = array_values(array_filter($all, static function (array $it) use ($fCat, $fPrio, $fEarly): bool {
+            if ($fCat !== '' && $it['category'] !== $fCat) {
+                return false;
+            }
+            if ($fPrio !== '' && (int) ($it['priority'] ?? 0) !== (int) $fPrio) {
+                return false;
+            }
+            if ($fEarly === '1' && (int) ($it['needed_early'] ?? 0) !== 1) {
+                return false;
+            }
+            return true;
+        }));
+
         $this->render('admin/items', [
-            'items'      => $items->all(),
-            'categories' => (new CategoryService($this->pdo))->all(),
+            'items'        => $filtered,
+            'totalCount'   => count($all),
+            'categories'   => (new CategoryService($this->pdo))->all(),
+            'filterCat'    => $fCat,
+            'filterPrio'   => $fPrio,
+            'filterEarly'  => $fEarly,
+            'filterActive' => ($fCat !== '' || $fPrio !== '' || $fEarly === '1'),
         ]);
     }
 }

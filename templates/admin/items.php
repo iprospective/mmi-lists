@@ -1,12 +1,54 @@
 <?php
 /** @var array $items */
+/** @var int $totalCount */
 /** @var array $categories */
+/** @var string $filterCat */
+/** @var string $filterPrio */
+/** @var string $filterEarly */
+/** @var bool $filterActive */
 /** @var ?string $msg */
 /** @var string $msgType */
 require APP_ROOT . '/templates/layout/admin_nav.php';
+// La réorganisation n'a de sens que si une catégorie est affichée en entier.
+$reorderable = ($filterPrio === '' && $filterEarly === '');
+$shown = count($items);
 ?>
 <h1 class="admin-h1">📷 Articles &amp; photos</h1>
 <?php if ($msg): ?><p class="alert <?= e($msgType) ?>"><?= e($msg) ?></p><?php endif; ?>
+
+<form method="get" action="<?= e(url('admin')) ?>" class="admin-filter row-form">
+    <label>Catégorie
+        <select name="category">
+            <option value="">Toutes</option>
+            <?php foreach ($categories as $c): ?>
+                <option value="<?= e($c['name']) ?>" <?= $filterCat === $c['name'] ? 'selected' : '' ?>><?= e($c['icon']) ?> <?= e($c['name']) ?></option>
+            <?php endforeach; ?>
+        </select>
+    </label>
+    <label>Utilité
+        <select name="priority">
+            <option value="">Toutes</option>
+            <option value="0" <?= $filterPrio === '0' ? 'selected' : '' ?>>Normale</option>
+            <option value="1" <?= $filterPrio === '1' ? 'selected' : '' ?>>+ Utile</option>
+            <option value="2" <?= $filterPrio === '2' ? 'selected' : '' ?>>++ Très utile</option>
+        </select>
+    </label>
+    <label class="checkbox">
+        <input type="checkbox" name="early" value="1" <?= $filterEarly === '1' ? 'checked' : '' ?>>
+        <span>⏱ Besoin tôt</span>
+    </label>
+    <button type="submit">Filtrer</button>
+    <?php if ($filterActive): ?>
+        <a href="<?= e(url('admin')) ?>" class="link-btn">réinitialiser</a>
+    <?php endif; ?>
+</form>
+
+<p class="muted small">
+    <?= $shown ?> article<?= $shown > 1 ? 's' : '' ?> affiché<?= $shown > 1 ? 's' : '' ?><?= $filterActive ? ' sur ' . (int) $totalCount : '' ?>.
+    <?php if (!$reorderable): ?>
+        <span>Réorganisation indisponible tant qu'un filtre « utilité » ou « besoin tôt » est actif.</span>
+    <?php endif; ?>
+</p>
 
 <details class="admin-add">
     <summary>➕ Ajouter un article</summary>
@@ -31,6 +73,9 @@ foreach ($items as $it) {
     $byCat[$it['category']][] = $it;
 }
 ?>
+<?php if ($shown === 0): ?>
+<p class="alert">Aucun article ne correspond à ces filtres.</p>
+<?php endif; ?>
 <?php foreach ($byCat as $cat => $catItems): ?>
 <h2 class="cat-title"><?= e($catItems[0]['category_icon'] ?? '🎁') ?> <?= e($cat) ?> <span class="muted small">(<?= count($catItems) ?>)</span></h2>
 <div class="admin-list">
@@ -46,8 +91,8 @@ foreach ($items as $it) {
                             <input type="hidden" name="action" value="move_item">
                             <input type="hidden" name="csrf" value="<?= e(csrf_token()) ?>">
                             <input type="hidden" name="item_id" value="<?= (int) $it['id'] ?>">
-                            <button type="submit" name="dir" value="up" class="link-btn" <?= $idx === 0 ? 'disabled' : '' ?> title="Monter">▲</button>
-                            <button type="submit" name="dir" value="down" class="link-btn" <?= $idx === count($catItems) - 1 ? 'disabled' : '' ?> title="Descendre">▼</button>
+                            <button type="submit" name="dir" value="up" class="link-btn" <?= (!$reorderable || $idx === 0) ? 'disabled' : '' ?> title="Monter">▲</button>
+                            <button type="submit" name="dir" value="down" class="link-btn" <?= (!$reorderable || $idx === count($catItems) - 1) ? 'disabled' : '' ?> title="Descendre">▼</button>
                         </form>
                     </span>
                     réservé <?= (int) $it['reserved'] ?><?= $it['qty_needed'] !== null ? ' / ' . (int) $it['qty_needed'] : ' (illimité)' ?>

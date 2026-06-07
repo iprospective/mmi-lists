@@ -9,6 +9,26 @@
     <div class="intro-text"><?= cfg('intro') /* HTML assaini à l'enregistrement */ ?></div>
 </section>
 
+<?php
+// Affiche la légende uniquement si au moins un article porte une étiquette.
+$hasTags = false;
+foreach ($byCat as $catItems) {
+    foreach ($catItems as $it) {
+        if ((int) ($it['priority'] ?? 0) > 0 || (int) ($it['needed_early'] ?? 0) === 1) {
+            $hasTags = true;
+            break 2;
+        }
+    }
+}
+?>
+<?php if ($hasTags): ?>
+    <aside class="legend">
+        <span class="legend-title">Les étiquettes :</span>
+        <span class="legend-item"><span class="tag tag-prio tag-prio1">+ Utile</span> ou <span class="tag tag-prio tag-prio2">++ Très utile</span> = ce qui nous rendrait le plus service.</span>
+        <span class="legend-item"><span class="tag tag-early">⏱ Besoin tôt</span> = utile dès les premières semaines.</span>
+    </aside>
+<?php endif; ?>
+
 <?php if ($flash): ?>
     <p class="alert <?= e($flash['type'] ?? 'ok') ?>"><?= e($flash['msg']) ?></p>
 <?php endif; ?>

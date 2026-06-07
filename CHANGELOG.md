@@ -8,6 +8,13 @@ Versionnage [SemVer](https://semver.org/lang/fr/) : `MAJEUR.MINEUR.CORRECTIF`.
 ## [Non publié]
 
 ### Ajouté
+- **Filtres dans l'administration des articles** : par catégorie, par niveau
+  d'utilité (« + » / « ++ ») et par « besoin tôt », combinables et conservés dans
+  l'URL (donc maintenus après une modification). La réorganisation est désactivée
+  tant qu'un filtre « utilité » ou « besoin tôt » masque une partie des articles.
+- **Légende des étiquettes sur la page d'accueil** : une courte note explique aux
+  visiteurs ce que signifient « + / ++ » (utilité) et « ⏱ Besoin tôt », affichée
+  seulement si au moins un article porte une étiquette.
 - **Articles regroupés par catégorie dans l'administration**, avec des flèches
   ▲ / ▼ pour changer l'ordre d'affichage d'un article au sein de sa catégorie.
 - **Étiquettes de besoin sur les articles** : niveau « + » (utile) ou « ++ » (très
