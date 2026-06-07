@@ -8,6 +8,9 @@ Versionnage [SemVer](https://semver.org/lang/fr/) : `MAJEUR.MINEUR.CORRECTIF`.
 ## [Non publié]
 
 ### Ajouté
+- **Étiquettes de besoin sur les articles** : niveau « + » (utile) ou « ++ » (très
+  utile) et marqueur « ⏱ Besoin tôt », réglables depuis l'administration et
+  affichés sous forme de badges sur la page d'accueil.
 - **Éditeur de texte enrichi (WYSIWYG)** pour le texte d'introduction dans les
   paramètres : gras, italique, listes et liens, sans dépendance externe. Le HTML
   saisi est assaini côté serveur (liste blanche de balises, attributs et scripts

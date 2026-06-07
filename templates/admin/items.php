@@ -69,6 +69,17 @@ require APP_ROOT . '/templates/layout/admin_nav.php';
                     <label>Mots-clés occasion <span class="muted">(vide = pas de liens)</span>
                         <input type="text" name="search" value="<?= e($it['search']) ?>">
                     </label>
+                    <label>Niveau de besoin
+                        <select name="priority">
+                            <option value="0" <?= (int) ($it['priority'] ?? 0) === 0 ? 'selected' : '' ?>>Normal</option>
+                            <option value="1" <?= (int) ($it['priority'] ?? 0) === 1 ? 'selected' : '' ?>>+ (utile)</option>
+                            <option value="2" <?= (int) ($it['priority'] ?? 0) === 2 ? 'selected' : '' ?>>++ (très utile)</option>
+                        </select>
+                    </label>
+                    <label class="checkbox">
+                        <input type="checkbox" name="needed_early" value="1" <?= (int) ($it['needed_early'] ?? 0) === 1 ? 'checked' : '' ?>>
+                        <span>⏱ Besoin tôt</span>
+                    </label>
                     <button type="submit">Enregistrer</button>
                 </form>
 

@@ -74,6 +74,21 @@ final class Database
                 value TEXT NOT NULL DEFAULT ''
             );
         ");
+
+        // Colonnes ajoutées après coup (bases existantes) : niveau de besoin et urgence.
+        self::ensureColumn($pdo, 'items', 'priority', 'priority INTEGER NOT NULL DEFAULT 0');
+        self::ensureColumn($pdo, 'items', 'needed_early', 'needed_early INTEGER NOT NULL DEFAULT 0');
+    }
+
+    // Ajoute une colonne si elle n'existe pas encore (migration idempotente).
+    private static function ensureColumn(PDO $pdo, string $table, string $column, string $definition): void
+    {
+        foreach ($pdo->query("PRAGMA table_info(" . $table . ")") as $col) {
+            if ($col['name'] === $column) {
+                return;
+            }
+        }
+        $pdo->exec("ALTER TABLE " . $table . " ADD COLUMN " . $definition);
     }
 
     private static function seed(PDO $pdo, string $catalogFile): void

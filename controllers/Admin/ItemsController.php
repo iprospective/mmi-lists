@@ -37,13 +37,17 @@ final class ItemsController extends BaseAdminController
                 } else {
                     $qtyRaw = trim((string) ($_POST['qty_needed'] ?? ''));
                     $qty = ($qtyRaw === '' || strtolower($qtyRaw) === 'illimité') ? null : max(0, (int) $qtyRaw);
+                    $priority = max(0, min(2, (int) ($_POST['priority'] ?? 0)));
+                    $early = isset($_POST['needed_early']) ? 1 : 0;
                     $items->update(
                         (int) ($_POST['item_id'] ?? 0),
                         $name,
                         trim((string) ($_POST['category'] ?? '')),
                         trim((string) ($_POST['description'] ?? '')),
                         trim((string) ($_POST['search'] ?? '')),
-                        $qty
+                        $qty,
+                        $priority,
+                        $early
                     );
                     $this->msg = "Article mis à jour.";
                 }

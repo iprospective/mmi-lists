@@ -27,6 +27,14 @@
                     <?php if ($complete): ?><span class="ribbon">Déjà offert 🎉</span><?php endif; ?>
                 </div>
                 <div class="card-body">
+                    <?php $prio = (int) ($it['priority'] ?? 0); $early = (int) ($it['needed_early'] ?? 0); ?>
+                    <?php if ($prio > 0 || $early): ?>
+                        <div class="tags">
+                            <?php if ($prio === 2): ?><span class="tag tag-prio tag-prio2" title="Besoin important">++ Très utile</span>
+                            <?php elseif ($prio === 1): ?><span class="tag tag-prio tag-prio1" title="Bien utile">+ Utile</span><?php endif; ?>
+                            <?php if ($early): ?><span class="tag tag-early" title="Utile dès le début">⏱ Besoin tôt</span><?php endif; ?>
+                        </div>
+                    <?php endif; ?>
                     <h3><?= e($it['name']) ?></h3>
                     <p class="desc"><?= e($it['description']) ?></p>
 

@@ -57,10 +57,10 @@ final class ItemService
             ->execute([$slug, $category, $name, $maxOrder]);
     }
 
-    public function update(int $id, string $name, string $category, string $description, string $search, ?int $qtyNeeded): void
+    public function update(int $id, string $name, string $category, string $description, string $search, ?int $qtyNeeded, int $priority = 0, int $neededEarly = 0): void
     {
-        $this->pdo->prepare("UPDATE items SET name=?, category=?, description=?, search=?, qty_needed=? WHERE id=?")
-            ->execute([$name, $category, $description, $search, $qtyNeeded, $id]);
+        $this->pdo->prepare("UPDATE items SET name=?, category=?, description=?, search=?, qty_needed=?, priority=?, needed_early=? WHERE id=?")
+            ->execute([$name, $category, $description, $search, $qtyNeeded, $priority, $neededEarly, $id]);
     }
 
     public function delete(int $id): void

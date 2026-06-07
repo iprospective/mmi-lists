@@ -54,6 +54,8 @@ input, textarea, select {
     border-radius: 10px; background: #fff; width: 100%;
 }
 input:focus, textarea:focus { outline: 2px solid var(--accent); border-color: var(--accent); }
+label.checkbox { flex-direction: row; align-items: center; gap: 8px; }
+label.checkbox input { width: auto; }
 button {
     font: inherit; font-weight: 600; cursor: pointer; border: none;
     background: var(--accent); color: #fff; padding: 10px 16px;
@@ -89,6 +91,17 @@ button:hover { background: var(--accent-dark); }
 }
 .card-body { padding: 14px 16px 18px; display: flex; flex-direction: column; gap: 8px; }
 .card-body h3 { margin: 0; font-size: 1.08rem; }
+
+/* Étiquettes de besoin / urgence */
+.tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; }
+.tag {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 2px 9px; border-radius: 999px; font-size: .76rem; font-weight: 700;
+    line-height: 1.4;
+}
+.tag-prio1 { background: #fdeede; color: var(--accent-dark); }
+.tag-prio2 { background: var(--accent); color: #fff; }
+.tag-early { background: #e6f3ec; color: #2f6b4d; }
 .desc { margin: 0; font-size: .9rem; color: #5a514b; }
 
 .qty { margin: 4px 0 0; font-size: .9rem; }
