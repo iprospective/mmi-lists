@@ -8,6 +8,10 @@ Versionnage [SemVer](https://semver.org/lang/fr/) : `MAJEUR.MINEUR.CORRECTIF`.
 ## [Non publié]
 
 ### Ajouté
+- **Photo d'accueil sur la page de connexion** : si une photo d'en-tête est définie en
+  administration, elle s'affiche à gauche du cadre de connexion, sur deux colonnes de
+  hauteur identique (l'image remplit sa colonne). En l'absence de photo, le cadre reste
+  centré comme avant ; sur mobile, la photo repasse au-dessus du cadre.
 - **Licence libre AGPL v3** : ajout du fichier `LICENSE`, d'un `README.md` décrivant
   le projet et l'installation, et d'une mention en pied de page reliant à la licence
   et au code source (<https://github.com/iprospective/mmi-lists>).
